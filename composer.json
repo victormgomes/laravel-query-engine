@@ -1,7 +1,7 @@
 {
     "name": "victormgomes/query-params",
     "description": "Automatically generate query parameters from Eloquent models",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "keywords": [
         "Victor M. Gomes",
         "laravel",
