@@ -45,17 +45,13 @@ it('normalizes filters with operators', function () {
     ]);
 });
 
-it('normalizes sorts', function () {
-    $request = new Request([
-        'sort' => 'name,-age',
-    ]);
-
+it('normalizes different sort styles', function ($input, $expected) {
+    $request = new Request(['sort' => $input]);
     QueryBuilder::normalize($request);
-
-    $sorts = $request->get(AssociatedIndex::SORTS);
-
-    expect($sorts)->toBe([
-        'name' => 'asc',
-        'age' => 'desc',
-    ]);
-});
+    
+    expect($request->get(AssociatedIndex::SORTS))->toBe($expected);
+})->with([
+    'string with colon' => ['name:desc', ['name' => 'desc']],
+    'comma separated' => ['name,created_at:desc', ['name' => 'asc', 'created_at' => 'desc']],
+    'array style' => [['name' => 'desc'], ['name' => 'desc']],
+]);

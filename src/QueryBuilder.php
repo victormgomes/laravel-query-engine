@@ -227,15 +227,7 @@ class QueryBuilder
         foreach (explode(',', $input) as $pair) {
             $parts = explode(':', $pair);
             $key = trim($parts[0]);
-
-            if (! isset($parts[1]) && str_starts_with($key, '-')) {
-                $key = ltrim($key, '-');
-                $value = 'desc';
-            } else {
-                $value = isset($parts[1]) ? trim($parts[1]) : $defaultVal;
-            }
-
-            $result[$key] = $value;
+            $result[$key] = isset($parts[1]) ? trim($parts[1]) : $defaultVal;
         }
 
         return $result;
