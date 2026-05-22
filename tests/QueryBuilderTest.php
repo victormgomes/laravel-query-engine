@@ -48,7 +48,7 @@ it('normalizes filters with operators', function () {
 it('normalizes different sort styles', function ($input, $expected) {
     $request = new Request(['sort' => $input]);
     QueryBuilder::normalize($request);
-    
+
     expect($request->get(AssociatedIndex::SORTS))->toBe($expected);
 })->with([
     'string with colon' => ['name:desc', ['name' => 'desc']],

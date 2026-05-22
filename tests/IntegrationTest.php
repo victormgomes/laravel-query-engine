@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Victormgomes\QueryParams\Enums\AssociatedIndex;
 use Victormgomes\QueryParams\QueryBuilder;
+use Victormgomes\QueryParams\Support\Builder\Operations\Filter;
 use Victormgomes\QueryParams\Tests\Models\Post;
 
 it('tests full end-to-end integration with relations and pagination', function () {
@@ -14,16 +16,16 @@ it('tests full end-to-end integration with relations and pagination', function (
                 'like' => 'Eloquent',
             ],
             'views' => [
-                'gt' => 100
-            ]
+                'gt' => 100,
+            ],
         ],
         'sort' => 'published_at:desc,views',
         'include' => 'author',
         'fields' => 'id,title,author_id',
         'page' => [
             'number' => 1,
-            'limit' => 25
-        ]
+            'limit' => 25,
+        ],
     ]);
 
     // 2. Run QueryBuilder
@@ -36,29 +38,29 @@ it('tests full end-to-end integration with relations and pagination', function (
     // 4. Assert Query Logic (Empirical verification)
     $query = Post::query();
     QueryBuilder::normalize($request);
-    
+
     // Apply Fields
-    $fields = $request->get(\Victormgomes\QueryParams\Enums\AssociatedIndex::FIELDS, []);
-    if (!empty($fields)) {
+    $fields = $request->get(AssociatedIndex::FIELDS, []);
+    if (! empty($fields)) {
         $query->select($fields);
     }
-    
+
     // Apply Includes
-    $includes = $request->get(\Victormgomes\QueryParams\Enums\AssociatedIndex::INCLUDES, []);
-    if (!empty($includes)) {
+    $includes = $request->get(AssociatedIndex::INCLUDES, []);
+    if (! empty($includes)) {
         $query->with($includes);
     }
 
     // Apply Filters
-    $filters = $request->get(\Victormgomes\QueryParams\Enums\AssociatedIndex::FILTERS, []);
+    $filters = $request->get(AssociatedIndex::FILTERS, []);
     foreach ($filters as $field => $operators) {
         foreach ($operators as $operator => $value) {
-            \Victormgomes\QueryParams\Support\Builder\Operations\Filter::build($query, $field, $operator, $value);
+            Filter::build($query, $field, $operator, $value);
         }
     }
 
     // Apply Sorts
-    $sorts = $request->get(\Victormgomes\QueryParams\Enums\AssociatedIndex::SORTS, []);
+    $sorts = $request->get(AssociatedIndex::SORTS, []);
     foreach ($sorts as $field => $direction) {
         $query->orderBy($field, $direction);
     }
@@ -71,7 +73,7 @@ it('tests full end-to-end integration with relations and pagination', function (
     // Filters
     expect($sql)->toContain('"title" like ?');
     expect($sql)->toContain('"views" > ?');
-    
+
     // Sorts
     expect($sql)->toContain('order by "published_at" desc, "views" asc');
 });

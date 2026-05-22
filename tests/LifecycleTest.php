@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Victormgomes\QueryParams\QueryBuilder;
 use Victormgomes\QueryParams\Resources\QueryResource;
 use Victormgomes\QueryParams\Rules;
@@ -11,13 +13,13 @@ use Victormgomes\QueryParams\Tests\Models\Post;
 
 it('tests the complete lifecycle from URL to JSON response', function () {
     // 1. Fresh Database State
-    \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-    \Illuminate\Support\Facades\DB::table('posts')->truncate();
-    \Illuminate\Support\Facades\DB::table('authors')->truncate();
-    \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+    Schema::disableForeignKeyConstraints();
+    DB::table('posts')->truncate();
+    DB::table('authors')->truncate();
+    Schema::enableForeignKeyConstraints();
 
     $author = Author::create(['name' => 'Victor M. Gomes']);
-    
+
     $post1 = Post::create([
         'author_id' => $author->id,
         'title' => 'UNIQUE_TITLE_FOR_FILTERING',
@@ -35,18 +37,18 @@ it('tests the complete lifecycle from URL to JSON response', function () {
 
     // 2. Mock Request
     // Note: We use name:desc because the original code doesn't support -name
-    $request = new Request();
+    $request = new Request;
     $request->merge([
         'filter' => [
-            'views' => '15000', 
+            'views' => '15000',
         ],
         'sort' => 'views:desc',
         'include' => 'author',
         'fields' => 'id,title,author_id',
         'page' => [
             'number' => 1,
-            'limit' => 1
-        ]
+            'limit' => 1,
+        ],
     ]);
 
     // 3. Rule Generation
@@ -63,12 +65,12 @@ it('tests the complete lifecycle from URL to JSON response', function () {
 
     // 6. Assertions
     expect($response)->toHaveKeys(['collection', 'total_items', 'per_page', 'current_page']);
-    
+
     // We expect 1 item
-    expect((int)$response['total_items'])->toBe(1);
+    expect((int) $response['total_items'])->toBe(1);
 
     $item = $response['collection']->first();
     $data = is_array($item) ? $item : $item->toArray($request);
-    
+
     expect($data)->toHaveKeys(['id', 'title', 'author_id']);
 });
