@@ -8,7 +8,7 @@ use Victormgomes\QueryParams\Tests\Models\TestModel;
 
 it('applies equal filter', function () {
     $query = TestModel::query();
-    
+
     Filter::build($query, 'name', Operators::EQ, 'Victor');
 
     expect($query->toSql())->toContain('where "name" = ?');
@@ -17,7 +17,7 @@ it('applies equal filter', function () {
 
 it('applies greater than filter', function () {
     $query = TestModel::query();
-    
+
     Filter::build($query, 'age', Operators::GT, 20);
 
     expect($query->toSql())->toContain('where "age" > ?');
@@ -26,7 +26,7 @@ it('applies greater than filter', function () {
 
 it('applies in filter', function () {
     $query = TestModel::query();
-    
+
     Filter::build($query, 'id', Operators::IN, [1, 2, 3]);
 
     expect($query->toSql())->toContain('where "id" in (?, ?, ?)');
@@ -35,7 +35,7 @@ it('applies in filter', function () {
 
 it('applies like filter', function () {
     $query = TestModel::query();
-    
+
     Filter::build($query, 'name', Operators::LIKE, 'Vic');
 
     expect($query->toSql())->toContain('where "name" like ?');

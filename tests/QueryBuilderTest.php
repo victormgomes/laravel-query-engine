@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Victormgomes\QueryParams\Enums\AssociatedIndex;
 use Victormgomes\QueryParams\Enums\Operators;
 use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Tests\Models\TestModel;
 
 it('normalizes simple filters', function () {
     $request = new Request([
