@@ -23,5 +23,6 @@ services:
       if [ ! -d 'vendor' ]; then
         composer install --no-interaction --prefer-dist
       fi &&
-      ./vendor/bin/pest
+      ./vendor/bin/pest &&
+      ./vendor/bin/phpstan analyse src --memory-limit=-1
       "
