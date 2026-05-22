@@ -30,10 +30,11 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        /*
-         foreach (\Illuminate\Support\Facades\File::allFiles(__DIR__ . '/../database/migrations') as $migration) {
-            (include $migration->getRealPath())->up();
-         }
-         */
+        $app['db']->connection()->getSchemaBuilder()->create('test_models', function ($table) {
+            $table->id();
+            $table->string('name');
+            $table->integer('age');
+            $table->timestamps();
+        });
     }
 }
