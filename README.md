@@ -6,23 +6,28 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
 [![License](https://img.shields.io/packagist/l/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
 
-A powerful, zero-boilerplate package to handle complex API query parameters (filtering, sorting, field selection, relationship loading, and pagination) using native Laravel validation and optimized Eloquent queries.
+A powerful, schema-aware API filtering engine for Laravel. It handles complex query parameters (filtering, sorting, field selection, relationship loading, and pagination) using native Laravel validation and highly optimized, database-agnostic Eloquent queries.
 
-## 🚀 Features
+## Why Use It?
 
-- **Zero-Config Relations:** Auto-maps `snake_case` aliases and Foreign Keys for all Eloquent relationships.
-- **Intelligent Queries:** Automatically optimizes relationship filters to use FK columns for better DB performance.
-- **Strict Security:** Native enforcement of Eloquent's `$visible` and `$hidden` attributes.
-- **Definitive Metadata:** A specialized, deduplicated JSON structure for building dynamic frontend filters.
-- **Fancy URLs:** Support for clean, "sentence-style" URL parameters.
-- **Native Validation:** Auto-generates strict, type-safe Laravel validation rules from your database schema.
-- **Pluggable Drivers:** Built-in support for complex field types like Translatable (JSON or Side-table).
+Building robust API endpoints typically requires writing repetitive validation rules, parsing URL arrays, and mapping them manually to Eloquent queries. This package acts as a **Schema-Aware Translation Layer**. It inspects your database schema to automatically whitelist columns, generate strict validation rules, and securely cast URL values into native PHP types before they reach your database.
+
+## Features
+
+- **Schema-Aware Validation:** Validation rules and type casting are automatically generated from your database schema.
+- **High Performance Caching:** Automatically caches generated rules to prevent database schema introspection overhead in production.
+- **Global Security Layer:** Granularly enable or disable specific URL features (like filtering, sorting, or includes) globally via the configuration file.
+- **AI Agent Ready:** Ships with a built-in Laravel Boost Skill to instantly teach AI coding assistants how to use the package in your project.
+- **Database Agnostic:** Natively supports MySQL, PostgreSQL, SQLite, and SQL Server out of the box via standard Eloquent methods.
+- **Two Syntax Formats:** Support for both standard Laravel Arrays and raw JSON strings in the URL.
+- **Strict Visibility:** Fully respects `$visible` and `$hidden` arrays on your models to prevent data exposure.
+- **IDE Autocompletion:** Plug-and-play autocomplete for all macros out of the box.
 
 ---
 
-## 📦 Installation
+## Installation
 
-1. Install the package via composer:
+1. Install the package via Composer:
 
 ```bash
 composer require victormgomes/query-params
@@ -36,112 +41,222 @@ php artisan vendor:publish --tag="query-params-config"
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
-Simply add the `#[MapQueryParams]` attribute and the `HasQueryParams` trait to your `FormRequest`:
+### Step 1: Auto-generate validation rules
+
+Annotate your FormRequest with `#[MapQueryParams(Model::class)]`.
 
 ```php
+// app/Http/Requests/IndexUserRequest.php
+use Illuminate\Foundation\Http\FormRequest;
 use Victormgomes\QueryParams\Attributes\MapQueryParams;
-use Victormgomes\QueryParams\Concerns\HasQueryParams;
 use App\Models\User;
 
 #[MapQueryParams(User::class)]
 class IndexUserRequest extends FormRequest
 {
-    use HasQueryParams;
-}
-```
-
-In your controller:
-
-```php
-public function index(IndexUserRequest $request)
-{
-    // The QueryBuilder uses the validated and normalized data automatically
-    return QueryBuilder::build(User::class, $request);
-}
-```
-
----
-
-## 🛡️ Security & Visibility
-
-The package strictly follows Laravel's internal visibility rules. Your API will never leak sensitive data because it respects:
-
-1.  **`$visible` (Allow-list):** If defined, only these fields will be exposed in metadata and available for query operations.
-2.  **`$hidden` (Deny-list):** Fields in this array are strictly excluded from all operations.
-
----
-
-## 🔗 Fancy URL Specification
-
-The package supports "Sentence Style" parameters, allowing you to combine multiple operations into a single query key.
-
-| Operation      | URL Key   | Fancy Sentence Format  | Example                                |
-| :------------- | :-------- | :--------------------- | :------------------------------------- |
-| **Filtering**  | `filter`  | `field:operator:value` | `?filter=name:like:Victor,active:true` |
-| **Sorting**    | `sort`    | `field:direction`      | `?sort=created_at:desc,name:asc`       |
-| **Fields**     | `fields`  | `field1,field2`        | `?fields=id,name,email`                |
-| **Includes**   | `include` | `relation1,relation2`  | `?include=domains,active_tags`         |
-| **Pagination** | `page`    | `key:value`            | `?page=number:2,limit:50`              |
-
-### Zero-Config Relationship Aliases
-You don't need to worry about naming conventions. The package automatically discovers:
-- **Snake Case:** `active_tags` in URL maps to `activeTags()` in Model.
-- **Foreign Keys:** `people_id` in URL maps to `people()` relation.
-- **Intelligent Filtering:** `?filter=people:1` is automatically optimized to `WHERE people_id = 1`.
-
-### Supported Filter Operators
-
-| Operator           | Description              | URL Example             |
-| :----------------- | :----------------------- | :---------------------- |
-| `eq`               | Equal (Default)          | `status:active`         |
-| `ne`               | Not Equal                | `role:ne:admin`         |
-| `like`             | Case-sensitive search    | `name:like:John`        |
-| `ilike`            | Case-insensitive search  | `email:ilike:HOTMAIL`   |
-| `gt` / `gte`       | Greater than (or equal)  | `price:gt:100`          |
-| `lt` / `lte`       | Less than (or equal)     | `age:lte:18`            |
-| `in` / `nin`       | In list / Not in list    | `id:in:1,2,3`           |
-| `null` / `notnull` | Is Null / Is Not Null    | `deleted_at:null:true`  |
-| `between`          | Between two values       | `price:between:10,50`   |
-| `contains`         | JSON/Array contains      | `tags:contains:urgent`  |
-| `fts`              | Full Text Search         | `content:fts:laravel`   |
-
----
-
-## 🖥️ Frontend Dynamic Filters (Metadata)
-
-The package provides a curated "Definitive Metadata" structure for frontend developers to build dynamic UI filters. It deduplicates aliases and only shows the most relevant names.
-
-```php
-// In your controller or service
-return Resource::getDefinitiveMetadata(User::class);
-```
-
-**Example JSON Response:**
-
-```json
-{
-    "model": "Contact",
-    "filters": {
-        "name": { "type": "string", "operations": ["eq", "like", "ilike"] },
-        "people": { "type": "relation_id", "operations": ["eq", "in"] }
-    },
-    "sorts": ["id", "name", "people"],
-    "includes": {
-        "people": { "related": "People", "type": "BelongsTo" },
-        "active_tags": { "related": "Tag", "type": "BelongsToMany" }
-    },
-    "pagination": {
-        "keys": ["number", "limit"],
-        "defaults": { "limit": 10, "max_limit": 100 }
+    public function authorize(): bool
+    {
+        return true;
     }
 }
 ```
 
+It generates the validation rules based on the model schema.
+
+### Step 2: Build the query
+
+The package automatically adds powerful new methods directly to all your Eloquent models. You can call these anywhere in your application (such as a Controller or a Service class) by simply passing the validated request:
+
+```php
+// app/Http/Controllers/UserController.php
+use App\Models\User;
+use App\Http\Requests\IndexUserRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+public function index(IndexUserRequest $request): LengthAwarePaginator
+{
+    // Pass the request to automatically apply all URL parameters
+    return User::paginateQuery($request);
+}
+```
+
+This returns a `LengthAwarePaginator` with all valid filters, sorts, includes, and pagination automatically applied.
+
 ---
 
-## 🛠️ Advanced: Pluggable Drivers
+## Available Model Methods
+
+All Eloquent models are automatically equipped with the following methods out of the box:
+
+```php
+// Full pipeline: returns a paginated result
+User::paginateQuery(?Request $request = null): LengthAwarePaginator
+
+// Raw builder: chain additional constraints before pagination
+User::buildQuery(?Request $request = null): Eloquent\Builder
+
+// Retrieve the auto-generated validation rules
+User::getQueryRules(): array
+
+// Retrieve a deduplicated schema representing allowed filters and includes for frontends
+User::getFilterSchema(): array
+```
+
+---
+
+## URL Syntax
+
+The package seamlessly supports two distinct formats for URL parameters. You can use whichever format best fits your frontend application.
+
+### 1. JSON Syntax
+You can pass raw JSON strings directly into the URL parameter. This is ideal for modern JavaScript frontends that easily serialize objects.
+
+| Operation | Example URL |
+| :-------- | :------ |
+| **Filters** | `?filters={"name":{"like":"John"}}` |
+| **Sorts** | `?sorts={"created_at":"desc"}` |
+| **Fields** | `?fields=["id","name"]` |
+| **Includes** | `?includes={"posts":{"fields":["id","title"]}}` |
+| **Pagination**| `?page={"number":2,"limit":50}` |
+
+### 2. Structured Array Syntax
+The standard PHP/Laravel nested array syntax. This is ideal for traditional HTML forms or programmatic URL generation.
+
+| Operation | Example URL |
+| :-------- | :------ |
+| **Filters** | `?filters[name][like]=John` |
+| **Sorts** | `?sorts[created_at]=desc` |
+| **Fields** | `?fields[]=id&fields[]=name` |
+| **Includes** | `?includes[posts][fields]=id,title` |
+| **Pagination**| `?page[number]=2&page[limit]=50` |
+
+---
+
+## Supported Filter Operators
+
+| Operator | Description | URL Example (Array Syntax) | DB Support |
+| :------- | :---------- | :---------- | :--------- |
+| `eq`, `ne` | Equal / Not Equal | `?filters[status][eq]=active` | Universal |
+| `like`, `notlike` | Pattern matching | `?filters[name][like]=John` | Universal |
+| `ilike`, `notilike` | Case-insensitive matching | `?filters[email][ilike]=HOTMAIL` | Universal (Graceful fallback) |
+| `gt`, `gte` | Greater than (or equal) | `?filters[price][gt]=100` | Universal |
+| `lt`, `lte` | Less than (or equal) | `?filters[age][lte]=18` | Universal |
+| `in`, `nin` | In list / Not in list | `?filters[id][in]=1,2,3` | Universal |
+| `null`, `notnull` | Null checks | `?filters[deleted_at][null]=true` | Universal |
+| `between`, `nbetween` | Range queries | `?filters[price][between]=10,50` | Universal |
+| `contains` | JSON/Array contains | `?filters[tags][contains]=urgent` | Universal |
+| `exists`, `notexists` | Relationship existence | `?filters[posts][exists]=true` | Universal |
+| `containedby` | JSON array contained by | `?filters[tags][containedby]=["urgent"]` | PostgreSQL only |
+| `overlap` | JSON array overlap | `?filters[tags][overlap]=["urgent"]` | PostgreSQL only |
+| `fts` | Full-text search | `?filters[content][fts]=laravel` | PostgreSQL only |
+
+*(Note: PostgreSQL-specific operators securely abort with an `InvalidArgumentException` if executed on non-PostgreSQL engines to prevent raw SQL syntax errors).*
+
+---
+
+## Advanced Usage
+
+### Intercepting and Modifying Rules
+
+When your FormRequest requires custom validation alongside the package's generated rules, use the `$this->queryParamRules()` mixin method to merge them seamlessly.
+
+```php
+#[MapQueryParams(User::class)]
+class IndexUserRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return array_merge(
+            $this->queryParamRules(),
+            [
+                'custom_header' => 'required|string',
+            ]
+        );
+    }
+}
+```
+
+### Global Registry (Alternative Resolution)
+
+If you cannot modify the FormRequest class directly (e.g., in a third-party package), register the request-model mapping globally:
+
+```php
+use Victormgomes\QueryParams\Support\ModelRegistry;
+
+ModelRegistry::register(IndexUserRequest::class, User::class);
+```
+
+### Automatic Type Casting
+
+Values are automatically cast into native PHP types based on your schema before hitting Eloquent.
+
+| Database Type | Cast | Example |
+| :------------ | :--- | :------ |
+| `integer`, `bigint` | `(int)` | `100` |
+| `float`, `decimal` | `(float)` | `9.99` |
+| `boolean` | `filter_var()` | `true` |
+| `date`, `datetime` | `Carbon::parse()` | `Carbon` instance |
+
+---
+
+## Frontend Dynamic Filters (Metadata)
+
+The package provides methods to export the schema for frontend applications building dynamic filter UIs.
+
+```php
+use Victormgomes\QueryParams\Support\Resource;
+
+// Deduplicated schema (Recommended for Frontend integration)
+return Resource::getFilterSchema(User::class);
+
+// Full exhaustive schema with all aliases and syntax mapping
+return Resource::getQueryGuide(User::class);
+```
+
+---
+
+## Console Commands
+
+To prevent database introspection overhead on every request in production, cache the generated rules.
+
+```bash
+php artisan query-params:cache                   # Scan models and cache all rules
+php artisan query-params:clear                   # Clear all cached rules
+php artisan query-params:clear App\Models\User   # Clear rules for a specific model
+```
+
+---
+
+## Configuration
+
+After publishing the config file (`config/query-params.php`), the following options are available:
+
+| Key | Env Variable | Default | Description |
+| :-- | :----------- | :------ | :---------- |
+| `metadata_connection` | `QUERY_PARAMS_METADATA_CONNECTION` | `null` | Custom DB connection for schema inspection |
+| `caching.enabled` | `QUERY_PARAMS_CACHE_ENABLED` | `true` | Enable/disable the rules caching layer |
+| `caching.ttl` | `QUERY_PARAMS_CACHE_TTL` | `3600` | Cache time-to-live in seconds |
+| `force_cache` | `QUERY_PARAMS_FORCE_CACHE` | `false` | Force cache usage outside `production` |
+| `debug` | `QUERY_PARAMS_DEBUG` | `false` | Log all generated rules to the Laravel log |
+| `pagination.max_limit`| `QUERY_PARAMS_MAX_LIMIT` | `100` | Strict upper limit for items per page |
+| `features` | Multiple | `true` | Globally enable/disable filters, sorts, includes |
+| `allowed_operators` | — | All operators | Global whitelist of allowed filter operators |
+| `drivers` | — | `[]` | Pluggable field resolvers |
+
+---
+
+## Security & Visibility
+
+The package is strictly bounded by your model's visibility configuration to prevent data leaks.
+
+1. **`$visible` (Allow-list):** If defined, only these columns can be filtered, sorted, or selected.
+2. **`$hidden` (Deny-list):** Columns in this array are strictly forbidden from all query operations.
+
+---
+
+## Pluggable Drivers
 
 Extend the package to handle custom database behaviors by defining a Resolver.
 
@@ -152,10 +267,10 @@ Extend the package to handle custom database behaviors by defining a Resolver.
 ],
 ```
 
-Your driver must implement the `Victormgomes\QueryParams\Contracts\FieldResolver` interface to handle custom filtering, sorting, and output transformation.
+Your driver must implement the `Victormgomes\QueryParams\Contracts\FieldResolver` interface.
 
 ---
 
-## ⚖️ License
+## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

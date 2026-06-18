@@ -12,12 +12,12 @@ it('applies all basic comparison operators', function (string $operator, string 
 
     expect($query->toSql())->toContain($expectedSql);
 })->with([
-    [Operators::EQ, 'where "views" = ?'],
-    [Operators::NE, 'where "views" != ?'],
-    [Operators::GT, 'where "views" > ?'],
-    [Operators::GTE, 'where "views" >= ?'],
-    [Operators::LT, 'where "views" < ?'],
-    [Operators::LTE, 'where "views" <= ?'],
+    [Operators::EQ->value, 'where "views" = ?'],
+    [Operators::NE->value, 'where "views" != ?'],
+    [Operators::GT->value, 'where "views" > ?'],
+    [Operators::GTE->value, 'where "views" >= ?'],
+    [Operators::LT->value, 'where "views" < ?'],
+    [Operators::LTE->value, 'where "views" <= ?'],
 ]);
 
 it('applies null and not null operators', function (string $operator, string $expectedSql) {
@@ -26,8 +26,8 @@ it('applies null and not null operators', function (string $operator, string $ex
 
     expect($query->toSql())->toContain($expectedSql);
 })->with([
-    [Operators::NULL, 'where "published_at" is null'],
-    [Operators::NOTNULL, 'where "published_at" is not null'],
+    [Operators::NULL->value, 'where "published_at" is null'],
+    [Operators::NOTNULL->value, 'where "published_at" is not null'],
 ]);
 
 it('applies in and not in operators', function (string $operator, string $expectedSql) {
@@ -36,8 +36,8 @@ it('applies in and not in operators', function (string $operator, string $expect
 
     expect($query->toSql())->toContain($expectedSql);
 })->with([
-    [Operators::IN, 'where "id" in (?, ?, ?)'],
-    [Operators::NIN, 'where "id" not in (?, ?, ?)'],
+    [Operators::IN->value, 'where "id" in (?, ?, ?)'],
+    [Operators::NIN->value, 'where "id" not in (?, ?, ?)'],
 ]);
 
 it('applies between and not between operators', function (string $operator, string $expectedSql) {
@@ -46,8 +46,8 @@ it('applies between and not between operators', function (string $operator, stri
 
     expect($query->toSql())->toContain($expectedSql);
 })->with([
-    [Operators::BETWEEN, 'where "views" between ? and ?'],
-    [Operators::NBETWEEN, 'where "views" not between ? and ?'],
+    [Operators::BETWEEN->value, 'where "views" between ? and ?'],
+    [Operators::NBETWEEN->value, 'where "views" not between ? and ?'],
 ]);
 
 it('applies like and ilike operators', function (string $operator, string $expectedSubSql) {
@@ -56,25 +56,32 @@ it('applies like and ilike operators', function (string $operator, string $expec
 
     expect($query->toSql())->toContain($expectedSubSql);
 })->with([
-    [Operators::LIKE, 'where "title" like ?'],
-    [Operators::NOTLIKE, 'where "title" not like ?'],
-    [Operators::ILIKE, 'LOWER(title) LIKE LOWER(?)'],
-    [Operators::NOTILIKE, 'LOWER(title) NOT LIKE LOWER(?)'],
+    [Operators::LIKE->value, 'where "title" like ?'],
+    [Operators::NOTLIKE->value, 'where "title" not like ?'],
+    [Operators::ILIKE->value, 'where "title" like ?'],
+    [Operators::NOTILIKE->value, 'where "title" not like ?'],
 ]);
 
-it('applies json operators', function (string $operator, string $expectedSubSql) {
+it('applies contains operator', function () {
     $query = Post::query();
-    Filter::build($query, 'tags', $operator, 'laravel');
+    Filter::build($query, 'tags', Operators::CONTAINS->value, 'laravel');
 
-    expect($query->toSql())->toContain($expectedSubSql);
+    expect($query->toSql())->toContain('json_each("tags")');
+});
+
+it('aborts safely when using postgres json operators on sqlite', function (string $operator) {
+    $query = Post::query();
+
+    expect(fn () => Filter::build($query, 'tags', $operator, 'laravel'))
+        ->toThrow(\InvalidArgumentException::class, "The '{$operator}' operator is only supported on PostgreSQL databases.");
 })->with([
-    [Operators::CONTAINS, 'json_each("tags")'],
-    [Operators::CONTAINEDBY, '? <@ tags'],
+    Operators::CONTAINEDBY->value,
+    Operators::OVERLAP->value,
 ]);
 
-it('applies full-text search operator', function () {
+it('aborts safely when using full-text search operator on sqlite', function () {
     $query = Post::query();
-    Filter::build($query, 'title', Operators::FTS, 'search term');
 
-    expect($query->toSql())->toContain('to_tsvector(title) @@ plainto_tsquery(?)');
+    expect(fn () => Filter::build($query, 'title', Operators::FTS->value, 'search term'))
+        ->toThrow(\InvalidArgumentException::class, "The 'fts' operator is only supported on PostgreSQL databases.");
 });

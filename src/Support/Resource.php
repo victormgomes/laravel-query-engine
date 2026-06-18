@@ -46,12 +46,20 @@ class Resource
 
         $relationMap = RelationMapper::getMap($modelFQCN);
 
+        $features = Config::get('query-params.features', [
+            'filters' => true,
+            'sorts' => true,
+            'includes' => true,
+            'fields' => true,
+            'page' => true,
+        ]);
+
         return [
-            'filters' => self::generateFilters($attributes, $relationMap),
-            'sorts' => self::generateSorts($attributes, $relationMap),
-            'pagination' => self::generatePagination(),
-            'fields' => self::generateFields($attributes),
-            'includes' => self::generateIncludes($relationMap),
+            'filters' => ($features['filters'] ?? true) ? self::generateFilters($attributes, $relationMap, $modelFQCN) : [],
+            'sorts' => ($features['sorts'] ?? true) ? self::generateSorts($attributes, $relationMap) : [],
+            'pagination' => ($features['page'] ?? true) ? self::generatePagination() : [],
+            'fields' => ($features['fields'] ?? true) ? self::generateFields($attributes) : [],
+            'includes' => ($features['includes'] ?? true) ? self::generateIncludes($relationMap) : [],
         ];
     }
 
@@ -59,7 +67,7 @@ class Resource
      * Returns a rich metadata structure specifically designed for frontend dynamic filter builders.
      * Fully covers all 5 operations: Filters, Sorts, Fields, Includes, and Pagination.
      */
-    public static function getMetadata(string $modelFQCN): array
+    public static function getQueryGuide(string $modelFQCN): array
     {
         $resource = self::generate($modelFQCN);
 
@@ -71,11 +79,11 @@ class Resource
             'available_includes' => $resource['includes'],
             'pagination_settings' => $resource['pagination'],
             'syntax' => [
-                'filter' => 'field:operator:value',
-                'sort' => 'field:direction',
-                'fields' => 'field1,field2',
-                'include' => 'relation1,relation2',
-                'page' => 'number:X,limit:Y',
+                'filters' => '{"field":{"operator":"value"}}',
+                'sorts' => '{"field":"direction"}',
+                'fields' => '["field1","field2"]',
+                'includes' => '["relation1","relation2"]',
+                'page' => '{"number":1,"limit":10}',
             ],
         ];
     }
@@ -84,7 +92,7 @@ class Resource
      * Returns a definitive, cleaned-up metadata structure for frontend services.
      * Hides redundant aliases and internal mapping details.
      */
-    public static function getDefinitiveMetadata(string $modelFQCN): array
+    public static function getFilterSchema(string $modelFQCN): array
     {
         $resource = self::generate($modelFQCN);
 
@@ -145,9 +153,10 @@ class Resource
         ];
     }
 
-    private static function generateFilters(array|Collection $attributes, array $relationMap = []): array
+    private static function generateFilters(array|Collection $attributes, array $relationMap = [], ?string $modelFQCN = null): array
     {
-        $operators = Operators::toArray();
+        $allowedOperators = Config::get('query-params.allowed_operators', Operators::values());
+        $operators = array_intersect(Operators::values(), $allowedOperators);
         $operatorTypes = Types::getOperatorTypes();
 
         $filters = [];
@@ -174,11 +183,53 @@ class Resource
         // Add relations that can be filtered via Foreign Key
         foreach ($relationMap as $name => $data) {
             if (isset($data['foreign_key']) && ! isset($filters[$name])) {
-                $filters[$name] = [
-                    'type' => 'relation_id',
-                    'operations' => [Operators::EQ, Operators::NE, Operators::IN, Operators::NIN],
-                    'is_alias' => $data['is_alias'] ?? false,
-                    'maps_to' => $data['foreign_key'],
+                $relationOps = array_intersect(
+                    [Operators::EQ->value, Operators::NE->value, Operators::IN->value, Operators::NIN->value],
+                    $allowedOperators
+                );
+
+                if (! empty($relationOps)) {
+                    $filters[$name] = [
+                        'type' => 'relation_id',
+                        'operations' => $relationOps,
+                        'is_alias' => $data['is_alias'] ?? false,
+                        'maps_to' => $data['foreign_key'],
+                    ];
+                }
+            }
+        }
+
+        // Add relationship existence checks (exists / notexists) for all relationships
+        foreach ($relationMap as $name => $data) {
+            $relationOps = array_intersect([Operators::EXISTS->value, Operators::NOTEXISTS->value], $allowedOperators);
+            if (! empty($relationOps)) {
+                if (isset($filters[$name])) {
+                    $filters[$name]['operations'] = array_values(array_unique(array_merge(
+                        $filters[$name]['operations'],
+                        $relationOps
+                    )));
+                } else {
+                    $filters[$name] = [
+                        'type' => 'relation',
+                        'operations' => array_values($relationOps),
+                        'is_alias' => $data['is_alias'] ?? false,
+                        'maps_to' => $data['real_name'],
+                    ];
+                }
+            }
+        }
+
+        // Add Soft Deletes options (with_deleted, only_deleted) if the model uses SoftDeletes
+        if ($modelFQCN && in_array(\Illuminate\Database\Eloquent\SoftDeletes::class, class_uses_recursive($modelFQCN), true)) {
+            $booleanOps = array_intersect([Operators::EQ->value], $allowedOperators);
+            if (! empty($booleanOps)) {
+                $filters['with_deleted'] = [
+                    'type' => 'boolean',
+                    'operations' => array_values($booleanOps),
+                ];
+                $filters['only_deleted'] = [
+                    'type' => 'boolean',
+                    'operations' => array_values($booleanOps),
                 ];
             }
         }
@@ -212,7 +263,7 @@ class Resource
     private static function generatePagination(): array
     {
         return [
-            'keys' => [AssociatedIndex::NUMBER, AssociatedIndex::LIMIT],
+            'keys' => [AssociatedIndex::NUMBER->value, AssociatedIndex::LIMIT->value, 'cursor'],
             'defaults' => [
                 'limit' => 10,
                 'max_limit' => 100,

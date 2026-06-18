@@ -1,7 +1,7 @@
 {
     "name": "victormgomes/query-params",
     "description": "Automatically generate query parameters from Eloquent models",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "keywords": [
         "Victor M. Gomes",
         "laravel",
@@ -32,7 +32,10 @@
         "illuminate/contracts": "^13.0",
         "illuminate/support": "^13.0",
         "illuminate/database": "^13.0",
-        "illuminate/http": "^13.0"
+        "illuminate/http": "^13.0",
+        "illuminate/validation": "^13.0",
+        "illuminate/pagination": "^13.0",
+        "illuminate/foundation": "^13.0"
     },
     "require-dev": {
         "laravel/pint": "^1.14",
@@ -49,13 +52,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Victormgomes\\QueryParams\\": "src/",
-            "Victormgomes\\QueryParams\\Database\\Factories\\": "database/factories/"
+            "Victormgomes\\QueryParams\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Victormgomes\\QueryParams\\Tests\\": "tests/",
+            "Victormgomes\\QueryParams\\Database\\Factories\\": "database/factories/",
             "Workbench\\App\\": "workbench/app/"
         }
     },

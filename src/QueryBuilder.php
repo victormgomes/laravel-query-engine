@@ -4,178 +4,76 @@ declare(strict_types=1);
 
 namespace Victormgomes\QueryParams;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\Cursor;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Traits\Macroable;
 use Illuminate\Validation\ValidationException;
 use Victormgomes\QueryParams\Contracts\FieldResolver;
+use Victormgomes\QueryParams\Enums\AbstractType;
 use Victormgomes\QueryParams\Enums\AssociatedIndex;
 use Victormgomes\QueryParams\Enums\Operators;
 use Victormgomes\QueryParams\Support\Builder\Operations\Filter;
 use Victormgomes\QueryParams\Support\ClassLoader;
-use Victormgomes\QueryParams\Support\RelationMapper;
+use Victormgomes\QueryParams\Support\ModelRegistry;
+use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Support\Resource;
 
 class QueryBuilder
 {
+    use Macroable;
+
     /**
-     * Normalize fancy URL parameters to standard nested array structure.
+     * @param \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model> $queryOrModel
+     * @param FormRequest|Request $request
+     * @return EloquentBuilder
      */
-    public static function normalize(FormRequest|Request $request, ?string $modelFQCN = null): void
+    public static function buildQuery(EloquentBuilder|string $queryOrModel, FormRequest|Request $request): EloquentBuilder
     {
-        $data = $request->all();
-
-        // 1. Includes
-        $includes = self::parseSentence(
-            $data[AssociatedIndex::INCLUDE] ?? $data[AssociatedIndex::INCLUDES] ?? [],
-            fn ($val) => trim($val)
-        );
-
-        if ($modelFQCN) {
-            $includes = array_map(function ($include) use ($modelFQCN) {
-                return RelationMapper::resolveRelation($modelFQCN, $include) ?? $include;
-            }, $includes);
+        if (is_string($queryOrModel)) {
+            $model = ClassLoader::instantiateModel($queryOrModel);
+            $query = $model->newQuery();
+            $modelFQCN = $queryOrModel;
+        } else {
+            $query = $queryOrModel;
+            $modelFQCN = get_class($query->getModel());
         }
 
-        $data[AssociatedIndex::INCLUDES] = $includes;
-        unset($data[AssociatedIndex::INCLUDE]);
-
-        // 2. Sorts
-        $sorts = self::parseKeyValueSentence(
-            $data[AssociatedIndex::SORT] ?? $data[AssociatedIndex::SORTS] ?? [],
-            'asc'
-        );
-
-        if ($modelFQCN) {
-            $mappedSorts = [];
-            foreach ($sorts as $field => $dir) {
-                $resolvedField = RelationMapper::resolveFilterField($modelFQCN, $field);
-                $mappedSorts[$resolvedField] = $dir;
-            }
-            $sorts = $mappedSorts;
-        }
-
-        $data[AssociatedIndex::SORTS] = $sorts;
-        unset($data[AssociatedIndex::SORT]);
-
-        // 3. Fields
-        $data[AssociatedIndex::FIELDS] = self::parseSentence(
-            $data[AssociatedIndex::FIELD] ?? $data[AssociatedIndex::FIELDS] ?? [],
-            fn ($val) => trim($val)
-        );
-        unset($data[AssociatedIndex::FIELD]);
-
-        // 4. Filters
-        $filters = self::parseFilterSentence(
-            $data[AssociatedIndex::FILTER] ?? $data[AssociatedIndex::FILTERS] ?? []
-        );
-
-        if ($modelFQCN) {
-            $mappedFilters = [];
-            foreach ($filters as $field => $ops) {
-                $resolvedField = RelationMapper::resolveFilterField($modelFQCN, $field);
-                $mappedFilters[$resolvedField] = $ops;
-            }
-            $filters = $mappedFilters;
-        }
-
-        // Ensure all filters have an operator
-        foreach ($filters as $field => $value) {
-            if (! is_array($value)) {
-                $filters[$field] = [Operators::EQ => $value];
-            }
-        }
-        $data[AssociatedIndex::FILTERS] = $filters;
-        unset($data[AssociatedIndex::FILTER]);
-
-        // 5. Pagination
-        $pageData = $data[AssociatedIndex::PAGE] ?? [];
-        if (is_string($pageData)) {
-            $data[AssociatedIndex::PAGE] = self::parseKeyValueSentence($pageData);
-        }
-
-        if (isset($data[AssociatedIndex::LIMIT])) {
-            $data[AssociatedIndex::PAGE] = (array) ($data[AssociatedIndex::PAGE] ?? []);
-            $data[AssociatedIndex::PAGE][AssociatedIndex::LIMIT] = $data[AssociatedIndex::LIMIT];
-            unset($data[AssociatedIndex::LIMIT]);
-        }
-
-        // 6. Type Casting Intelligence (If model is known)
-        if ($modelFQCN) {
-            $data = self::castDataTypes($data, $modelFQCN);
-        }
-
-        $request->replace($data);
-    }
-
-    private static function castDataTypes(array $data, string $modelFQCN): array
-    {
-        $resources = Resource::generate($modelFQCN);
-        $filters = $data[AssociatedIndex::FILTERS] ?? [];
-
-        foreach ($filters as $field => $ops) {
-            $type = $resources['filters'][$field]['type'] ?? 'string';
-
-            foreach ($ops as $op => $val) {
-                $data[AssociatedIndex::FILTERS][$field][$op] = self::castValue($val, $type);
-            }
-        }
-
-        return $data;
-    }
-
-    private static function castValue(mixed $value, string $type): mixed
-    {
-        if (is_array($value)) {
-            return array_map(fn ($v) => self::castValue($v, $type), $value);
-        }
-
-        return match ($type) {
-            'integer' => (int) $value,
-            'numeric', 'float' => (float) $value,
-            'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
-            'date', 'datetime' => Carbon::parse((string) $value),
-            default => $value,
-        };
-    }
-
-    public static function build(string $modelFQCN, FormRequest|Request $request): LengthAwarePaginator
-    {
-        $allKeys = array_keys(Arr::dot($request->all()));
-        $ruleKeys = array_keys(($request instanceof FormRequest && method_exists($request, 'rules')) ? $request->rules() : []);
-
-        if (! empty($ruleKeys)) {
-            $normalizedInputKeys = array_map(fn ($key) => preg_replace('/\.\d+$/', '.*', $key), $allKeys);
-            $extra_parameters = array_diff($normalizedInputKeys, $ruleKeys);
-
-            if (! empty($extra_parameters)) {
-                $actualExtras = array_values(array_intersect_key($allKeys, array_intersect($normalizedInputKeys, $extra_parameters)));
-                throw ValidationException::withMessages([
-                    'extra_fields' => 'Unexpected parameter(s) key(s): '.implode(', ', $actualExtras),
-                ]);
-            }
-        }
-
+        QueryNormalizer::normalize($request, $modelFQCN);
         $validated = $request instanceof FormRequest ? $request->validated() : $request->all();
-        $model = ClassLoader::instanceModel($modelFQCN);
-        $query = $model->newQuery();
+        $validated = self::castDataTypes($validated, $modelFQCN);
         $locale = app()->getLocale();
+        $driver = QueryNormalizer::resolveDriver();
 
-        /** @var class-string<FieldResolver>|null $driverClass */
-        $driverClass = Config::get('query-params.drivers.translatable');
-        $driver = $driverClass ? new $driverClass : null;
+        if ($filters = $validated[AssociatedIndex::FILTERS->value] ?? null) {
+            $filters = (array) $filters;
+            if (in_array(\Illuminate\Database\Eloquent\SoftDeletes::class, class_uses_recursive($modelFQCN), true)) {
+                $withDeleted = filter_var($filters['with_deleted'][Operators::EQ->value] ?? false, FILTER_VALIDATE_BOOLEAN);
+                $onlyDeleted = filter_var($filters['only_deleted'][Operators::EQ->value] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-        // Apply Filters
-        if ($filters = $validated[AssociatedIndex::FILTERS] ?? null) {
-            self::applyFilters($query, (array) $filters, $locale, $driver);
+                if ($onlyDeleted) {
+                    /** @phpstan-ignore-next-line */
+                    $query->onlyTrashed();
+                } elseif ($withDeleted) {
+                    /** @phpstan-ignore-next-line */
+                    $query->withTrashed();
+                }
+
+                unset($filters['with_deleted'], $filters['only_deleted']);
+            }
+
+            if (! empty($filters)) {
+                self::applyFilters($query, $filters, $locale, $driver);
+            }
         }
 
-        // Apply Sorts
-        if ($sorts = $validated[AssociatedIndex::SORTS] ?? null) {
-            foreach (self::flattenToDotNotation((array) $sorts) as $field => $dir) {
+        if ($sorts = $validated[AssociatedIndex::SORTS->value] ?? null) {
+            foreach (Arr::dot((array) $sorts) as $field => $dir) {
                 $applied = $driver ? $driver->applySort($query, $field, $dir, $locale) : false;
                 if (! $applied) {
                     $query->orderBy($field, $dir);
@@ -183,22 +81,50 @@ class QueryBuilder
             }
         }
 
-        // Apply Fields
-        if ($fields = $validated[AssociatedIndex::FIELDS] ?? null) {
+        if ($fields = $validated[AssociatedIndex::FIELDS->value] ?? null) {
             $query->select((array) $fields);
         }
 
-        // Apply Includes
-        if ($includes = $validated[AssociatedIndex::INCLUDES] ?? null) {
-            $query->with((array) $includes);
+        if ($includes = $validated[AssociatedIndex::INCLUDES->value] ?? null) {
+            $with = [];
+            foreach ((array) $includes as $key => $value) {
+                if (is_string($key) && is_array($value)) {
+                    $with[$key] = function ($query) use ($value) {
+                        if (! empty($value['fields'])) {
+                            $query->select($value['fields']);
+                        }
+                    };
+                } else {
+                    $with[] = $value;
+                }
+            }
+            $query->with($with);
         }
 
-        $page = (array) ($validated[AssociatedIndex::PAGE] ?? []);
+        return $query;
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model> $queryOrModel
+     * @param FormRequest|Request $request
+     * @return LengthAwarePaginator
+     */
+    public static function paginateQuery(EloquentBuilder|string $queryOrModel, FormRequest|Request $request): LengthAwarePaginator
+    {
+        self::validateExtraParameters($request);
+
+        $query = self::buildQuery($queryOrModel, $request);
+
+        $validated = $request instanceof FormRequest ? $request->validated() : $request->all();
+        $locale = app()->getLocale();
+        $driver = QueryNormalizer::resolveDriver();
+
+        $page = (array) ($validated[AssociatedIndex::PAGE->value] ?? []);
         $paginator = $query->paginate(
-            (int) ($page[AssociatedIndex::LIMIT] ?? 10),
+            (int) ($page[AssociatedIndex::LIMIT->value] ?? 10),
             ['*'],
-            AssociatedIndex::PAGE,
-            (int) ($page[AssociatedIndex::NUMBER] ?? 1)
+            AssociatedIndex::PAGE->value,
+            (int) ($page[AssociatedIndex::NUMBER->value] ?? 1)
         );
 
         if ($driver) {
@@ -208,49 +134,41 @@ class QueryBuilder
         return $paginator;
     }
 
-    private static function parseSentence(mixed $input, callable $callback): array
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model> $queryOrModel
+     * @param FormRequest|Request $request
+     * @return CursorPaginator
+     */
+    public static function cursorPaginateQuery(EloquentBuilder|string $queryOrModel, FormRequest|Request $request): CursorPaginator
     {
-        if (is_string($input)) {
-            return array_map($callback, explode(',', $input));
+        self::validateExtraParameters($request);
+
+        $query = self::buildQuery($queryOrModel, $request);
+
+        $validated = $request instanceof FormRequest ? $request->validated() : $request->all();
+        $locale = app()->getLocale();
+        $driver = QueryNormalizer::resolveDriver();
+
+        $page = (array) ($validated[AssociatedIndex::PAGE->value] ?? []);
+
+        $cursorValue = $page['cursor'] ?? null;
+        $cursor = null;
+        if (is_string($cursorValue)) {
+            $cursor = Cursor::fromEncoded($cursorValue);
         }
 
-        return (array) $input;
-    }
+        $cursorPaginator = $query->cursorPaginate(
+            (int) ($page[AssociatedIndex::LIMIT->value] ?? 10),
+            ['*'],
+            'page[cursor]',
+            $cursor
+        );
 
-    private static function parseKeyValueSentence(mixed $input, ?string $defaultVal = null): array
-    {
-        if (! is_string($input)) {
-            return (array) $input;
+        if ($driver) {
+            $cursorPaginator->through(fn ($item) => $driver->translateItem($item, $locale));
         }
 
-        $result = [];
-        foreach (explode(',', $input) as $pair) {
-            $parts = explode(':', $pair);
-            $key = trim($parts[0]);
-            $result[$key] = isset($parts[1]) ? trim($parts[1]) : $defaultVal;
-        }
-
-        return $result;
-    }
-
-    private static function parseFilterSentence(mixed $input): array
-    {
-        if (! is_string($input)) {
-            return (array) $input;
-        }
-
-        $result = [];
-        foreach (explode(',', $input) as $pair) {
-            $parts = explode(':', $pair);
-            $field = trim($parts[0]);
-            if (count($parts) === 3) {
-                $result[$field][trim($parts[1])] = trim($parts[2]);
-            } elseif (count($parts) === 2) {
-                $result[$field][Operators::EQ] = trim($parts[1]);
-            }
-        }
-
-        return $result;
+        return $cursorPaginator;
     }
 
     private static function applyFilters($query, array $filters, string $locale, ?FieldResolver $driver, string $prefix = ''): void
@@ -270,18 +188,57 @@ class QueryBuilder
         }
     }
 
-    private static function flattenToDotNotation(array $array, string $prefix = ''): array
+    private static function validateExtraParameters(FormRequest|Request $request): void
     {
-        $result = [];
-        foreach ($array as $key => $value) {
-            $newKey = $prefix === '' ? (string) $key : $prefix.'.'.$key;
-            if (is_array($value)) {
-                $result = array_merge($result, self::flattenToDotNotation($value, $newKey));
-            } else {
-                $result[$newKey] = $value;
+        $allKeys = array_keys(Arr::dot($request->all()));
+        $ruleKeys = array_keys(($request instanceof FormRequest && method_exists($request, 'rules')) ? $request->rules() : []);
+
+        if (! empty($ruleKeys)) {
+            $normalizedInputKeys = array_map(fn ($key) => preg_replace('/\.\d+$/', '.*', $key), $allKeys);
+            $extra_parameters = array_diff($normalizedInputKeys, $ruleKeys);
+
+            if (! empty($extra_parameters)) {
+                $actualExtras = array_values(array_intersect_key($allKeys, array_intersect($normalizedInputKeys, $extra_parameters)));
+                throw ValidationException::withMessages([
+                    'extra_fields' => 'Unexpected parameter(s) key(s): '.implode(', ', $actualExtras),
+                ]);
+            }
+        }
+    }
+
+    private static function castDataTypes(array $data, string $modelFQCN): array
+    {
+        $resources = Resource::generate($modelFQCN);
+        $filters = $data[AssociatedIndex::FILTERS->value] ?? [];
+
+        foreach ($filters as $field => $ops) {
+            $type = $resources['filters'][$field]['type'] ?? 'string';
+            $type = $type instanceof AbstractType ? $type->value : $type;
+
+            foreach ($ops as $op => $val) {
+                $data[AssociatedIndex::FILTERS->value][$field][$op] = self::castValue($val, $type);
             }
         }
 
-        return $result;
+        return $data;
+    }
+
+    private static function castValue(mixed $value, string $type): mixed
+    {
+        if ($value === null || $value === '' || $value === 'null') {
+            return null;
+        }
+
+        if (is_array($value)) {
+            return array_map(fn ($v) => self::castValue($v, $type), $value);
+        }
+
+        return match ($type) {
+            'integer' => (int) $value,
+            'numeric', 'float' => (float) $value,
+            'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
+            'date', 'datetime' => Carbon::parse((string) $value),
+            default => $value,
+        };
     }
 }

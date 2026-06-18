@@ -4,28 +4,13 @@ declare(strict_types=1);
 
 namespace Victormgomes\QueryParams\Enums;
 
-use ReflectionClass;
-
-final class AbstractType
+enum AbstractType: string
 {
-    public const STRING = 'string';
-
-    public const INTEGER = 'integer';
-
-    public const FLOAT = 'float';
-
-    public const NUMERIC = 'numeric';
-
-    public const BOOLEAN = 'boolean';
-
-    public const DATE = 'date';
-
-    public const DATETIME = 'datetime';
-
-    public const ARRAY = 'array';
-
-    public static function toArray(): array
-    {
-        return array_values((new ReflectionClass(self::class))->getConstants());
-    }
+    case STRING = 'string';
+    case INTEGER = 'integer';
+    case NUMERIC = 'numeric';
+    case BOOLEAN = 'boolean';
+    case DATE = 'date';
+    case DATETIME = 'datetime';
+    case ARRAY = 'array';
 }

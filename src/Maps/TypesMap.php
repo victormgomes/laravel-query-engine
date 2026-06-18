@@ -13,57 +13,19 @@ class TypesMap
 {
     public static function abstract(): array
     {
-        $typeGroups = [
-            AbstractType::INTEGER => [
-                'integer',
-                'bigint',
-                'smallint',
-                'mediumint',
-                'tinyint',
-                'int',
-                'int4',
-                'int8',
-            ],
-            AbstractType::NUMERIC => [
-                'decimal',
-                'float',
-                'double',
-                'numeric',
-                'real',
-            ],
-            AbstractType::STRING => [
-                'string',
-                'text',
-                'guid',
-                'char',
-                'varchar',
-                'character varying',
-            ],
-            AbstractType::BOOLEAN => [
-                'boolean',
-                'bool',
-            ],
-            AbstractType::DATE => [
-                'date',
-            ],
-            AbstractType::DATETIME => [
-                'datetime',
-                'datetimetz',
-                'timestamp',
-                'timestamptz',
-                'timestamp without time zone',
-                'timestamp with time zone',
-            ],
-            AbstractType::ARRAY => [
-                'json',
-                'array',
-                'simple_array',
-                'jsonb',
-            ],
+        $typeMappings = [
+            'integer' => [AbstractType::INTEGER, ['integer', 'bigint', 'smallint', 'mediumint', 'tinyint', 'int', 'int4', 'int8']],
+            'numeric' => [AbstractType::NUMERIC, ['decimal', 'float', 'double', 'numeric', 'real']],
+            'string' => [AbstractType::STRING, ['string', 'text', 'guid', 'char', 'varchar', 'character varying']],
+            'boolean' => [AbstractType::BOOLEAN, ['boolean', 'bool']],
+            'date' => [AbstractType::DATE, ['date']],
+            'datetime' => [AbstractType::DATETIME, ['datetime', 'datetimetz', 'timestamp', 'timestamptz', 'timestamp without time zone', 'timestamp with time zone']],
+            'array' => [AbstractType::ARRAY, ['json', 'array', 'simple_array', 'jsonb']],
         ];
 
         $flattened = [];
-        foreach ($typeGroups as $abstractType => $dbTypes) {
+        foreach ($typeMappings as $item) {
+            [$abstractType, $dbTypes] = $item;
             foreach ($dbTypes as $dbType) {
                 $flattened[$dbType] = $abstractType;
             }
@@ -91,81 +53,93 @@ class TypesMap
         ];
 
         return [
-            Operators::EQ => [
-                AssociatedIndex::TYPES => $allTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::SOMETIMES),
+            Operators::EQ->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::SOMETIMES),
             ],
-            Operators::NE => [
-                AssociatedIndex::TYPES => $allTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::SOMETIMES),
+            Operators::NE->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::SOMETIMES),
             ],
-            Operators::GT => [
-                AssociatedIndex::TYPES => $numericTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::SOMETIMES),
+            Operators::GT->value => [
+                AssociatedIndex::TYPES->value => $numericTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::SOMETIMES),
             ],
-            Operators::GTE => [
-                AssociatedIndex::TYPES => $numericTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::SOMETIMES),
+            Operators::GTE->value => [
+                AssociatedIndex::TYPES->value => $numericTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::SOMETIMES),
             ],
-            Operators::LT => [
-                AssociatedIndex::TYPES => $numericTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::SOMETIMES),
+            Operators::LT->value => [
+                AssociatedIndex::TYPES->value => $numericTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::SOMETIMES),
             ],
-            Operators::LTE => [
-                AssociatedIndex::TYPES => $numericTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::SOMETIMES),
+            Operators::LTE->value => [
+                AssociatedIndex::TYPES->value => $numericTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::SOMETIMES),
             ],
-            Operators::IN => [
-                AssociatedIndex::TYPES => $allTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::ARRAY, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::IN->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::ARRAY, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::NIN => [
-                AssociatedIndex::TYPES => $allTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::ARRAY, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::NIN->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::ARRAY, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::NULL => [
-                AssociatedIndex::TYPES => $allTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::BOOLEAN, RuleType::SOMETIMES),
+            Operators::NULL->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::BOOLEAN, RuleType::SOMETIMES),
             ],
-            Operators::NOTNULL => [
-                AssociatedIndex::TYPES => $allTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::BOOLEAN, RuleType::SOMETIMES),
+            Operators::NOTNULL->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::BOOLEAN, RuleType::SOMETIMES),
             ],
-            Operators::BETWEEN => [
-                AssociatedIndex::TYPES => $numericTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::ARRAY, RuleType::SIZE_2, RuleType::SOMETIMES),
+            Operators::BETWEEN->value => [
+                AssociatedIndex::TYPES->value => $numericTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::ARRAY, RuleType::SIZE_2, RuleType::SOMETIMES),
             ],
-            Operators::NBETWEEN => [
-                AssociatedIndex::TYPES => $numericTypes,
-                AssociatedIndex::RULES => RuleType::build(RuleType::ARRAY, RuleType::SIZE_2, RuleType::SOMETIMES),
+            Operators::NBETWEEN->value => [
+                AssociatedIndex::TYPES->value => $numericTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::ARRAY, RuleType::SIZE_2, RuleType::SOMETIMES),
             ],
-            Operators::LIKE => [
-                AssociatedIndex::TYPES => [AbstractType::STRING],
-                AssociatedIndex::RULES => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::LIKE->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::NOTLIKE => [
-                AssociatedIndex::TYPES => [AbstractType::STRING],
-                AssociatedIndex::RULES => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::NOTLIKE->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::ILIKE => [
-                AssociatedIndex::TYPES => [AbstractType::STRING],
-                AssociatedIndex::RULES => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::ILIKE->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::NOTILIKE => [
-                AssociatedIndex::TYPES => [AbstractType::STRING],
-                AssociatedIndex::RULES => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::NOTILIKE->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::CONTAINS => [
-                AssociatedIndex::TYPES => [AbstractType::ARRAY, AbstractType::STRING],
-                AssociatedIndex::RULES => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::CONTAINS->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::ARRAY, AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::CONTAINEDBY => [
-                AssociatedIndex::TYPES => [AbstractType::ARRAY, AbstractType::STRING],
-                AssociatedIndex::RULES => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::CONTAINEDBY->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::ARRAY, AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
             ],
-            Operators::FTS => [
-                AssociatedIndex::TYPES => [AbstractType::STRING],
-                AssociatedIndex::RULES => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            Operators::OVERLAP->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::ARRAY, AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            ],
+            Operators::FTS->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::STRING],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::MIN_1, RuleType::SOMETIMES),
+            ],
+            Operators::EXISTS->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::BOOLEAN, RuleType::SOMETIMES),
+            ],
+            Operators::NOTEXISTS->value => [
+                AssociatedIndex::TYPES->value => $allTypes,
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::BOOLEAN, RuleType::SOMETIMES),
             ],
         ];
     }

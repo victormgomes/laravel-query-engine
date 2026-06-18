@@ -4,7 +4,3 @@ parameters:
             message: "#^Called 'env' outside of the config directory which returns null when the config is cached, use 'config'\\.$#"
             count: 5
             path: config/query-params.php
-        -
-            message: "#^Trait Victormgomes\\\\QueryParams\\\\Concerns\\\\HasQueryParams is used zero times and is not analysed\\.$#"
-            count: 1
-            path: src/Concerns/HasQueryParams.php

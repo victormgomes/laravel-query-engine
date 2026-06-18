@@ -11,7 +11,7 @@ class ClassLoader
 {
     protected static array $instances = [];
 
-    public static function instanceModel(string $modelFQCN): Model
+    public static function instantiateModel(string $modelFQCN): Model
     {
         if (isset(self::$instances[$modelFQCN])) {
             return self::$instances[$modelFQCN];

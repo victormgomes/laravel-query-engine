@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Victormgomes\QueryParams\Support;
 
 use Illuminate\Validation\Rule;
+use Victormgomes\QueryParams\Enums\AbstractType;
 use Victormgomes\QueryParams\Enums\RuleType;
 
 class RuleGenerator
@@ -43,13 +44,12 @@ class RuleGenerator
             $allowedOps = $config['operations'];
             $rules['filters.'.$field] = ['sometimes', 'array:'.implode(',', $allowedOps)];
 
-            // Capture the actual DB type for this column
-            $dbType = $config['type'] ?? 'string';
+            $dbType = $config['type'] ?? AbstractType::STRING;
+            $dbTypeValue = $dbType instanceof AbstractType ? $dbType->value : (string) $dbType;
 
             foreach ($allowedOps as $operator) {
-                // Combine the base operator rule with the DB type (e.g., integer + eq)
                 $baseRule = $operatorRules[$operator];
-                $rules['filters.'.$field.'.'.$operator] = RuleType::build($dbType, $baseRule);
+                $rules['filters.'.$field.'.'.$operator] = RuleType::build($dbTypeValue, $baseRule);
             }
         }
 
@@ -118,9 +118,12 @@ class RuleGenerator
         $rules['page'] = ['sometimes', 'array:'.implode(',', $allowedPages)];
 
         foreach ($allowedPages as $page) {
-            $rule_value = 'sometimes|integer|min:1';
+            $rule_value = ['sometimes', 'integer', 'min:1'];
             if ($page === 'limit') {
-                $rule_value = 'sometimes|integer|min:1|max:100';
+                $maxLimit = \Illuminate\Support\Facades\Config::get('query-params.pagination.max_limit', 100);
+                $rule_value = ['sometimes', 'integer', 'min:1', "max:{$maxLimit}"];
+            } elseif ($page === 'cursor') {
+                $rule_value = ['sometimes', 'string'];
             }
             $rules['page.'.$page] = $rule_value;
         }

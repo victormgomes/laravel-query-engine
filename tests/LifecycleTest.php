@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Resources\QueryResource;
+use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Rules;
 use Victormgomes\QueryParams\Tests\Models\Author;
 use Victormgomes\QueryParams\Tests\Models\Post;
@@ -39,12 +39,12 @@ it('tests the complete lifecycle from URL to JSON response', function () {
     // Note: We use name:desc because the original code doesn't support -name
     $request = new Request;
     $request->merge([
-        'filter' => [
+        'filters' => [
             'views' => '15000',
         ],
-        'sort' => 'views:desc',
-        'include' => 'author',
-        'fields' => 'id,title,author_id',
+        'sorts' => ['views' => 'desc'],
+        'includes' => ['author'],
+        'fields' => ['id', 'title', 'author_id'],
         'page' => [
             'number' => 1,
             'limit' => 1,
@@ -56,21 +56,12 @@ it('tests the complete lifecycle from URL to JSON response', function () {
     expect($rules)->toBeArray();
 
     // 4. Query Building
-    QueryBuilder::normalize($request);
-    $paginator = QueryBuilder::build(Post::class, $request);
+    QueryNormalizer::normalize($request);
+    $paginator = QueryBuilder::paginateQuery(Post::class, $request);
 
-    // 5. Response Transformation
-    $resource = new QueryResource($paginator);
-    $response = $resource->toArray($request);
+    // 5. Assertions
+    expect($paginator->total())->toBe(1);
 
-    // 6. Assertions
-    expect($response)->toHaveKeys(['collection', 'total_items', 'per_page', 'current_page']);
-
-    // We expect 1 item
-    expect((int) $response['total_items'])->toBe(1);
-
-    $item = $response['collection']->first();
-    $data = is_array($item) ? $item : $item->toArray($request);
-
-    expect($data)->toHaveKeys(['id', 'title', 'author_id']);
+    $item = $paginator->first();
+    expect($item->toArray())->toHaveKeys(['id', 'title', 'author_id']);
 });

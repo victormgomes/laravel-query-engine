@@ -46,6 +46,7 @@ class TestCase extends Orchestra
             $table->boolean('is_published')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->json('tags')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
