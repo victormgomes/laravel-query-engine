@@ -6,6 +6,7 @@ namespace Victormgomes\QueryParams\Support;
 
 use Illuminate\Database\Eloquent\ModelInfo;
 use Illuminate\Database\Eloquent\ModelInspector;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -220,7 +221,7 @@ class Resource
         }
 
         // Add Soft Deletes options (with_deleted, only_deleted) if the model uses SoftDeletes
-        if ($modelFQCN && in_array(\Illuminate\Database\Eloquent\SoftDeletes::class, class_uses_recursive($modelFQCN), true)) {
+        if ($modelFQCN && in_array(SoftDeletes::class, class_uses_recursive($modelFQCN), true)) {
             $booleanOps = array_intersect([Operators::EQ->value], $allowedOperators);
             if (! empty($booleanOps)) {
                 $filters['with_deleted'] = [

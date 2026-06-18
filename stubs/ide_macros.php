@@ -5,38 +5,45 @@
 // developers receive perfect autocompletion without needing to publish any stubs.
 
 namespace Illuminate\Database\Eloquent {
-    class Builder {
+    use Illuminate\Foundation\Http\FormRequest;
+    use Illuminate\Http\Request;
+    use Illuminate\Pagination\CursorPaginator;
+    use Illuminate\Pagination\LengthAwarePaginator;
+
+    class Builder
+    {
         /**
          * Automatically paginate the Eloquent query based on URL parameters.
-         * 
-         * @param \Illuminate\Foundation\Http\FormRequest|\Illuminate\Http\Request|null $request
-         * @return \Illuminate\Pagination\LengthAwarePaginator
+         *
+         * @param  FormRequest|Request|null  $request
+         * @return LengthAwarePaginator
          */
         public function paginateQuery($request = null) {}
 
         /**
          * Automatically cursor-paginate the Eloquent query based on URL parameters.
-         * 
-         * @param \Illuminate\Foundation\Http\FormRequest|\Illuminate\Http\Request|null $request
-         * @return \Illuminate\Pagination\CursorPaginator
+         *
+         * @param  FormRequest|Request|null  $request
+         * @return CursorPaginator
          */
         public function cursorPaginateQuery($request = null) {}
 
         /**
          * Apply URL filters to the Eloquent query without paginating.
-         * 
-         * @param \Illuminate\Foundation\Http\FormRequest|\Illuminate\Http\Request|null $request
-         * @return \Illuminate\Database\Eloquent\Builder
+         *
+         * @param  FormRequest|Request|null  $request
+         * @return Builder
          */
         public function buildQuery($request = null) {}
     }
 }
 
 namespace Illuminate\Foundation\Http {
-    class FormRequest {
+    class FormRequest
+    {
         /**
          * Automatically generate validation rules from the attached Model's schema.
-         * 
+         *
          * @return array<string, mixed>
          */
         public function queryParamRules(): array {}

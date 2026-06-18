@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Victormgomes\QueryParams;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -15,7 +16,6 @@ use Victormgomes\QueryParams\Support\ModelRegistry;
 use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Support\QueryParamsRequestMixin;
 use Victormgomes\QueryParams\Support\Resource;
-use Victormgomes\QueryParams\Rules;
 
 class QueryParamsServiceProvider extends PackageServiceProvider
 {
@@ -33,40 +33,40 @@ class QueryParamsServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->app->singleton('query-builder', function () {
-            return new QueryBuilder();
+            return new QueryBuilder;
         });
     }
 
     public function packageBooted(): void
     {
         EloquentBuilder::macro('paginateQuery', function (?Request $request = null) {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var Builder $this */
             $request ??= request();
 
             return QueryBuilder::paginateQuery($this, $request);
         });
 
         EloquentBuilder::macro('cursorPaginateQuery', function (?Request $request = null) {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var Builder $this */
             $request ??= request();
 
             return QueryBuilder::cursorPaginateQuery($this, $request);
         });
 
         EloquentBuilder::macro('buildQuery', function (?Request $request = null) {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var Builder $this */
             $request ??= request();
 
             return QueryBuilder::buildQuery($this, $request);
         });
 
         EloquentBuilder::macro('getQueryRules', function () {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var Builder $this */
             return Rules::generate(get_class($this->getModel()));
         });
 
         EloquentBuilder::macro('getFilterSchema', function () {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var Builder $this */
             return Resource::getFilterSchema(get_class($this->getModel()));
         });
 
@@ -78,6 +78,6 @@ class QueryParamsServiceProvider extends PackageServiceProvider
             }
         });
 
-        FormRequest::mixin(new QueryParamsRequestMixin());
+        FormRequest::mixin(new QueryParamsRequestMixin);
     }
 }

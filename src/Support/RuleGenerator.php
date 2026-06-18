@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Victormgomes\QueryParams\Support;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use Victormgomes\QueryParams\Enums\AbstractType;
 use Victormgomes\QueryParams\Enums\RuleType;
@@ -120,7 +121,7 @@ class RuleGenerator
         foreach ($allowedPages as $page) {
             $rule_value = ['sometimes', 'integer', 'min:1'];
             if ($page === 'limit') {
-                $maxLimit = \Illuminate\Support\Facades\Config::get('query-params.pagination.max_limit', 100);
+                $maxLimit = Config::get('query-params.pagination.max_limit', 100);
                 $rule_value = ['sometimes', 'integer', 'min:1', "max:{$maxLimit}"];
             } elseif ($page === 'cursor') {
                 $rule_value = ['sometimes', 'string'];

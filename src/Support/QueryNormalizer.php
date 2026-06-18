@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Victormgomes\QueryParams\Support;
 
-use Carbon\Carbon;
-use Victormgomes\QueryParams\Enums\AbstractType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -19,7 +17,7 @@ class QueryNormalizer
 
     public static function normalize(FormRequest|Request $request, ?string $modelFQCN = null): void
     {
-        self::$normalized ??= new \WeakMap();
+        self::$normalized ??= new \WeakMap;
 
         if (isset(self::$normalized[$request])) {
             return;

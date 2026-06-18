@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Victormgomes\QueryParams\Enums\AssociatedIndex;
 use Victormgomes\QueryParams\Enums\Operators;
 use Victormgomes\QueryParams\Support\QueryNormalizer;
+use Victormgomes\QueryParams\Tests\Models\Post;
 
 it('normalizes simple filters', function () {
     $request = new Request([
@@ -130,7 +131,7 @@ it('wraps empty or null strings in eq operator during normalization', function (
         ],
     ]);
 
-    QueryNormalizer::normalize($request, \Victormgomes\QueryParams\Tests\Models\Post::class);
+    QueryNormalizer::normalize($request, Post::class);
 
     $filters = $request->get(AssociatedIndex::FILTERS->value);
 

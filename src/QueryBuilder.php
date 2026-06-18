@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Victormgomes\QueryParams;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\Cursor;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +23,6 @@ use Victormgomes\QueryParams\Enums\AssociatedIndex;
 use Victormgomes\QueryParams\Enums\Operators;
 use Victormgomes\QueryParams\Support\Builder\Operations\Filter;
 use Victormgomes\QueryParams\Support\ClassLoader;
-use Victormgomes\QueryParams\Support\ModelRegistry;
 use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Support\Resource;
 
@@ -29,9 +31,7 @@ class QueryBuilder
     use Macroable;
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model> $queryOrModel
-     * @param FormRequest|Request $request
-     * @return EloquentBuilder
+     * @param  Builder|class-string<Model>  $queryOrModel
      */
     public static function buildQuery(EloquentBuilder|string $queryOrModel, FormRequest|Request $request): EloquentBuilder
     {
@@ -52,7 +52,7 @@ class QueryBuilder
 
         if ($filters = $validated[AssociatedIndex::FILTERS->value] ?? null) {
             $filters = (array) $filters;
-            if (in_array(\Illuminate\Database\Eloquent\SoftDeletes::class, class_uses_recursive($modelFQCN), true)) {
+            if (in_array(SoftDeletes::class, class_uses_recursive($modelFQCN), true)) {
                 $withDeleted = filter_var($filters['with_deleted'][Operators::EQ->value] ?? false, FILTER_VALIDATE_BOOLEAN);
                 $onlyDeleted = filter_var($filters['only_deleted'][Operators::EQ->value] ?? false, FILTER_VALIDATE_BOOLEAN);
 
@@ -105,9 +105,7 @@ class QueryBuilder
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model> $queryOrModel
-     * @param FormRequest|Request $request
-     * @return LengthAwarePaginator
+     * @param  Builder|class-string<Model>  $queryOrModel
      */
     public static function paginateQuery(EloquentBuilder|string $queryOrModel, FormRequest|Request $request): LengthAwarePaginator
     {
@@ -135,9 +133,7 @@ class QueryBuilder
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model> $queryOrModel
-     * @param FormRequest|Request $request
-     * @return CursorPaginator
+     * @param  Builder|class-string<Model>  $queryOrModel
      */
     public static function cursorPaginateQuery(EloquentBuilder|string $queryOrModel, FormRequest|Request $request): CursorPaginator
     {

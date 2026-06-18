@@ -59,11 +59,11 @@ return [
     |
     */
     'features' => [
-        'filters'   => env('QUERY_PARAMS_ENABLE_FILTERS', true),
-        'sorts'     => env('QUERY_PARAMS_ENABLE_SORTS', true),
-        'includes'  => env('QUERY_PARAMS_ENABLE_INCLUDES', true),
-        'fields'    => env('QUERY_PARAMS_ENABLE_FIELDS', true),
-        'page'      => env('QUERY_PARAMS_ENABLE_PAGINATION', true),
+        'filters' => env('QUERY_PARAMS_ENABLE_FILTERS', true),
+        'sorts' => env('QUERY_PARAMS_ENABLE_SORTS', true),
+        'includes' => env('QUERY_PARAMS_ENABLE_INCLUDES', true),
+        'fields' => env('QUERY_PARAMS_ENABLE_FIELDS', true),
+        'page' => env('QUERY_PARAMS_ENABLE_PAGINATION', true),
     ],
 
     /*

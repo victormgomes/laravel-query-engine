@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Victormgomes\QueryParams\Support\Builder\Operations\Types;
@@ -14,13 +15,14 @@ class PostgresHandler implements FilterOperation
         // CONTAINS is fully supported across all databases natively by Laravel
         if ($operator === Operators::CONTAINS) {
             $query->whereJsonContains($field, $value);
+
             return;
         }
 
         // The remaining operators require raw PostgreSQL syntax.
         // Safety Check: Prevent MySQL/SQLite from crashing.
         $connection = $query->getConnection();
-        if (!method_exists($connection, 'getDriverName') || $connection->getDriverName() !== 'pgsql') {
+        if (! method_exists($connection, 'getDriverName') || $connection->getDriverName() !== 'pgsql') {
             throw new \InvalidArgumentException("The '{$operator->value}' operator is only supported on PostgreSQL databases.");
         }
 

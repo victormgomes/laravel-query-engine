@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Victormgomes\QueryParams\Support\Builder\Operations\Types;
@@ -24,7 +25,7 @@ class LogicalHandler implements FilterOperation
                     }
                 }
             }),
-            Operators::AND => (function() use ($query, $value) {
+            Operators::AND => (function () use ($query, $value) {
                 foreach ($value as $subField => $subOps) {
                     foreach ((array) $subOps as $op => $val) {
                         Filter::build($query, $subField, $op, $val);

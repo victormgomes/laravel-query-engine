@@ -5,9 +5,9 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Victormgomes\QueryParams\Enums\AssociatedIndex;
+use Victormgomes\QueryParams\Rules;
 use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Support\Resource;
-use Victormgomes\QueryParams\Rules;
 use Victormgomes\QueryParams\Tests\Models\Post;
 
 it('respects globally disabled features in resource generation', function () {

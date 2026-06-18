@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Validation\ValidationException;
 use Victormgomes\QueryParams\QueryBuilder;
 use Victormgomes\QueryParams\Tests\Models\Author;
@@ -27,7 +29,7 @@ it('supports cursor pagination via cursorPaginateQuery macro', function () {
 
     $paginator1 = Post::cursorPaginateQuery($request);
 
-    expect($paginator1)->toBeInstanceOf(\Illuminate\Pagination\CursorPaginator::class);
+    expect($paginator1)->toBeInstanceOf(CursorPaginator::class);
     expect($paginator1->count())->toBe(2);
     expect($paginator1->hasMorePages())->toBeTrue();
 
@@ -108,9 +110,17 @@ it('supports shorthand relationship existence check (exists)', function () {
 });
 
 it('rejects top-level limit parameter under strict rule validation', function () {
-    $request = new class extends \Illuminate\Foundation\Http\FormRequest {
-        public function authorize(): bool { return true; }
-        public function rules(): array { return ['page' => 'sometimes|array']; }
+    $request = new class extends FormRequest
+    {
+        public function authorize(): bool
+        {
+            return true;
+        }
+
+        public function rules(): array
+        {
+            return ['page' => 'sometimes|array'];
+        }
     };
     $request->initialize(['limit' => 25]);
 

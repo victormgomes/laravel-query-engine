@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Rules;
+use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Tests\Models\Author;
 use Victormgomes\QueryParams\Tests\Models\Post;
 

@@ -73,7 +73,7 @@ it('aborts safely when using postgres json operators on sqlite', function (strin
     $query = Post::query();
 
     expect(fn () => Filter::build($query, 'tags', $operator, 'laravel'))
-        ->toThrow(\InvalidArgumentException::class, "The '{$operator}' operator is only supported on PostgreSQL databases.");
+        ->toThrow(InvalidArgumentException::class, "The '{$operator}' operator is only supported on PostgreSQL databases.");
 })->with([
     Operators::CONTAINEDBY->value,
     Operators::OVERLAP->value,
@@ -83,5 +83,5 @@ it('aborts safely when using full-text search operator on sqlite', function () {
     $query = Post::query();
 
     expect(fn () => Filter::build($query, 'title', Operators::FTS->value, 'search term'))
-        ->toThrow(\InvalidArgumentException::class, "The 'fts' operator is only supported on PostgreSQL databases.");
+        ->toThrow(InvalidArgumentException::class, "The 'fts' operator is only supported on PostgreSQL databases.");
 });
