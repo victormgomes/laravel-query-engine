@@ -35,6 +35,20 @@ namespace Illuminate\Database\Eloquent {
          * @return Builder
          */
         public function buildQuery($request = null) {}
+
+        /**
+         * Retrieve the auto-generated validation rules from the model.
+         *
+         * @return array<string, mixed>
+         */
+        public function getQueryRules(): array {}
+
+        /**
+         * Retrieve a deduplicated schema representing allowed filters and includes for frontends.
+         *
+         * @return array<string, mixed>
+         */
+        public function getFilterSchema(): array {}
     }
 }
 

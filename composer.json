@@ -5,11 +5,23 @@
     "keywords": [
         "Victor M. Gomes",
         "laravel",
-        "query-params"
+        "eloquent",
+        "query-params",
+        "query-builder",
+        "api",
+        "rest",
+        "json-api",
+        "filter",
+        "sort",
+        "pagination",
+        "search",
+        "validation",
+        "relationships"
     ],
     "homepage": "https://github.com/victormgomes/query-params",
     "license": "MIT",
     "support": {
+        "docs": "https://github.com/victormgomes/query-params/tree/main/docs",
         "issues": "https://github.com/victormgomes/query-params/issues",
         "source": "https://github.com/victormgomes/query-params"
     },
@@ -33,13 +45,20 @@
         "illuminate/support": "^13.0",
         "illuminate/database": "^13.0",
         "illuminate/http": "^13.0",
+        "illuminate/pagination": "^13.0",
         "illuminate/validation": "^13.0",
-        "illuminate/pagination": "^13.0"
+        "illuminate/console": "^13.0",
+        "nesbot/carbon": "^3.0",
+        "symfony/finder": "^7.0",
+        "ext-filter": "*"
     },
     "require-dev": {
-        "laravel/pint": "^1.14",
-        "nunomaduro/collision": "^8.8",
+        "infection/infection": "^0.29",
         "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.14",
+        "maglnet/composer-require-checker": "^4.0",
+        "nunomaduro/collision": "^8.8",
+        "nunomaduro/phpinsights": "^2.11",
         "orchestra/testbench": "^11.0||^10.0||^9.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-arch": "^4.0",
@@ -47,6 +66,7 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
+        "rector/rector": "^1.0|^2.0",
         "spatie/laravel-ray": "^1.35"
     },
     "autoload": {
@@ -67,11 +87,18 @@
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
-        "format": "vendor/bin/pint"
+        "format": "vendor/bin/pint",
+        "check-requires": "vendor/bin/composer-require-checker check --config-file=composer-require-checker.json composer.json",
+        "mutate": "vendor/bin/pest --mutate --parallel --everything --covered-only",
+        "refactor": "vendor/bin/rector process",
+        "insights": "vendor/bin/phpinsights analyse src"
     },
     "config": {
         "sort-packages": true,
+        "process-timeout": 0,
         "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "infection/extension-installer": true,
             "pestphp/pest-plugin": true,
             "phpstan/extension-installer": true
         }

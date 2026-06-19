@@ -32,13 +32,13 @@ class TestCase extends Orchestra
 
         $schema = $app['db']->connection()->getSchemaBuilder();
 
-        $schema->create('authors', function ($table) {
+        $schema->create('authors', function ($table): void {
             $table->id();
             $table->string('name');
             $table->timestamps();
         });
 
-        $schema->create('posts', function ($table) {
+        $schema->create('posts', function ($table): void {
             $table->id();
             $table->foreignId('author_id');
             $table->string('title');

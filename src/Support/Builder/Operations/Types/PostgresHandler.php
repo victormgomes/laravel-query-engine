@@ -26,6 +26,7 @@ class PostgresHandler implements FilterOperation
             throw new \InvalidArgumentException("The '{$operator->value}' operator is only supported on PostgreSQL databases.");
         }
 
+        // @codeCoverageIgnoreStart
         $grammar = $query instanceof EloquentBuilder ? $query->getQuery()->getGrammar() : $query->getGrammar();
         $wrappedField = $grammar->wrap($field);
 
@@ -35,5 +36,6 @@ class PostgresHandler implements FilterOperation
             Operators::FTS => $query->whereRaw("to_tsvector({$wrappedField}) @@ plainto_tsquery(?)", [$value]),
             default => null,
         };
+        // @codeCoverageIgnoreEnd
     }
 }

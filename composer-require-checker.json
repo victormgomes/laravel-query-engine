@@ -1,0 +1,30 @@
+{
+    "symbol-whitelist": [
+        "app",
+        "app_path",
+        "base_path",
+        "class_basename",
+        "class_uses_recursive",
+        "request",
+        "Illuminate\\Console\\Command",
+        "Illuminate\\Database\\Eloquent\\Builder",
+        "Illuminate\\Database\\Eloquent\\Model",
+        "Illuminate\\Database\\Eloquent\\ModelInspector",
+        "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+        "Illuminate\\Database\\Eloquent\\Relations\\Relation",
+        "Illuminate\\Database\\Eloquent\\SoftDeletes",
+        "Illuminate\\Foundation\\Http\\FormRequest",
+        "Illuminate\\Pagination\\Cursor",
+        "Illuminate\\Pagination\\CursorPaginator",
+        "Illuminate\\Pagination\\LengthAwarePaginator",
+        "Illuminate\\Support\\Arr",
+        "Illuminate\\Support\\Facades\\Cache",
+        "Illuminate\\Support\\Facades\\Config",
+        "Illuminate\\Support\\Facades\\Facade",
+        "Illuminate\\Support\\Facades\\Log",
+        "Illuminate\\Support\\Str",
+        "Illuminate\\Support\\Traits\\Macroable",
+        "Illuminate\\Validation\\Rule",
+        "Illuminate\\Validation\\ValidationException"
+    ]
+}

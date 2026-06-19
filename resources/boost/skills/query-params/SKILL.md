@@ -68,7 +68,7 @@ The package natively decodes two URL formats. Use whichever fits the client appl
 ```
 
 ### Filter Operators Map
-- **Universal DB Support:** `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`, `null`, `notnull`, `between`, `nbetween`, `like`, `notlike`, `ilike` (graceful fallback), `notilike` (graceful fallback), `contains`, `exists`, `notexists`.
+- **Universal DB Support:** `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`, `null`, `notnull`, `between`, `nbetween`, `like`, `notlike`, `ilike` (graceful fallback), `notilike` (graceful fallback), `contains`, `exists`, `notexists`, `or`, `and`, `not`.
 - **PostgreSQL Exclusive:** `containedby`, `overlap`, `fts`. (Securely aborts on non-pgsql).
 
 ## Advanced Usage

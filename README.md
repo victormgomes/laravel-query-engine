@@ -115,168 +115,41 @@ User::getFilterSchema(): array
 
 ---
 
-## URL Syntax
+## Documentation
 
-The package seamlessly supports two distinct formats for URL parameters. You can use whichever format best fits your frontend application.
+For a deep dive into the features, please read the official documentation:
 
-### 1. JSON Syntax
-You can pass raw JSON strings directly into the URL parameter. This is ideal for modern JavaScript frontends that easily serialize objects.
-
-| Operation | Example URL |
-| :-------- | :------ |
-| **Filters** | `?filters={"name":{"like":"John"}}` |
-| **Sorts** | `?sorts={"created_at":"desc"}` |
-| **Fields** | `?fields=["id","name"]` |
-| **Includes** | `?includes={"posts":{"fields":["id","title"]}}` |
-| **Pagination**| `?page={"number":2,"limit":50}` |
-
-### 2. Structured Array Syntax
-The standard PHP/Laravel nested array syntax. This is ideal for traditional HTML forms or programmatic URL generation.
-
-| Operation | Example URL |
-| :-------- | :------ |
-| **Filters** | `?filters[name][like]=John` |
-| **Sorts** | `?sorts[created_at]=desc` |
-| **Fields** | `?fields[]=id&fields[]=name` |
-| **Includes** | `?includes[posts][fields]=id,title` |
-| **Pagination**| `?page[number]=2&page[limit]=50` |
+- [URL Syntax & Supported Filters](docs/1-url-syntax-and-filters.md)
+- [Advanced Usage & Frontend Integration](docs/2-advanced-usage.md)
+- [Configuration, Caching & Security](docs/3-configuration-and-security.md)
 
 ---
 
-## Supported Filter Operators
-
-| Operator | Description | URL Example (Array Syntax) | DB Support |
-| :------- | :---------- | :---------- | :--------- |
-| `eq`, `ne` | Equal / Not Equal | `?filters[status][eq]=active` | Universal |
-| `like`, `notlike` | Pattern matching | `?filters[name][like]=John` | Universal |
-| `ilike`, `notilike` | Case-insensitive matching | `?filters[email][ilike]=HOTMAIL` | Universal (Graceful fallback) |
-| `gt`, `gte` | Greater than (or equal) | `?filters[price][gt]=100` | Universal |
-| `lt`, `lte` | Less than (or equal) | `?filters[age][lte]=18` | Universal |
-| `in`, `nin` | In list / Not in list | `?filters[id][in]=1,2,3` | Universal |
-| `null`, `notnull` | Null checks | `?filters[deleted_at][null]=true` | Universal |
-| `between`, `nbetween` | Range queries | `?filters[price][between]=10,50` | Universal |
-| `contains` | JSON/Array contains | `?filters[tags][contains]=urgent` | Universal |
-| `exists`, `notexists` | Relationship existence | `?filters[posts][exists]=true` | Universal |
-| `containedby` | JSON array contained by | `?filters[tags][containedby]=["urgent"]` | PostgreSQL only |
-| `overlap` | JSON array overlap | `?filters[tags][overlap]=["urgent"]` | PostgreSQL only |
-| `fts` | Full-text search | `?filters[content][fts]=laravel` | PostgreSQL only |
-
-*(Note: PostgreSQL-specific operators securely abort with an `InvalidArgumentException` if executed on non-PostgreSQL engines to prevent raw SQL syntax errors).*
-
----
-
-## Advanced Usage
-
-### Intercepting and Modifying Rules
-
-When your FormRequest requires custom validation alongside the package's generated rules, use the `$this->queryParamRules()` mixin method to merge them seamlessly.
-
-```php
-#[MapQueryParams(User::class)]
-class IndexUserRequest extends FormRequest
-{
-    public function rules(): array
-    {
-        return array_merge(
-            $this->queryParamRules(),
-            [
-                'custom_header' => 'required|string',
-            ]
-        );
-    }
-}
-```
-
-### Global Registry (Alternative Resolution)
-
-If you cannot modify the FormRequest class directly (e.g., in a third-party package), register the request-model mapping globally:
-
-```php
-use Victormgomes\QueryParams\Support\ModelRegistry;
-
-ModelRegistry::register(IndexUserRequest::class, User::class);
-```
-
-### Automatic Type Casting
-
-Values are automatically cast into native PHP types based on your schema before hitting Eloquent.
-
-| Database Type | Cast | Example |
-| :------------ | :--- | :------ |
-| `integer`, `bigint` | `(int)` | `100` |
-| `float`, `decimal` | `(float)` | `9.99` |
-| `boolean` | `filter_var()` | `true` |
-| `date`, `datetime` | `Carbon::parse()` | `Carbon` instance |
-
----
-
-## Frontend Dynamic Filters (Metadata)
-
-The package provides methods to export the schema for frontend applications building dynamic filter UIs.
-
-```php
-use Victormgomes\QueryParams\Support\Resource;
-
-// Deduplicated schema (Recommended for Frontend integration)
-return Resource::getFilterSchema(User::class);
-
-// Full exhaustive schema with all aliases and syntax mapping
-return Resource::getQueryGuide(User::class);
-```
-
----
-
-## Console Commands
-
-To prevent database introspection overhead on every request in production, cache the generated rules.
+## Testing
 
 ```bash
-php artisan query-params:cache                   # Scan models and cache all rules
-php artisan query-params:clear                   # Clear all cached rules
-php artisan query-params:clear App\Models\User   # Clear rules for a specific model
+composer run test
 ```
 
----
+## Credits
 
-## Configuration
+- [Victor M. Gomes](https://github.com/victormgomes)
+- [All Contributors](../../contributors)
 
-After publishing the config file (`config/query-params.php`), the following options are available:
+## Support Us
 
-| Key | Env Variable | Default | Description |
-| :-- | :----------- | :------ | :---------- |
-| `metadata_connection` | `QUERY_PARAMS_METADATA_CONNECTION` | `null` | Custom DB connection for schema inspection |
-| `caching.enabled` | `QUERY_PARAMS_CACHE_ENABLED` | `true` | Enable/disable the rules caching layer |
-| `caching.ttl` | `QUERY_PARAMS_CACHE_TTL` | `3600` | Cache time-to-live in seconds |
-| `force_cache` | `QUERY_PARAMS_FORCE_CACHE` | `false` | Force cache usage outside `production` |
-| `debug` | `QUERY_PARAMS_DEBUG` | `false` | Log all generated rules to the Laravel log |
-| `pagination.max_limit`| `QUERY_PARAMS_MAX_LIMIT` | `100` | Strict upper limit for items per page |
-| `features` | Multiple | `true` | Globally enable/disable filters, sorts, includes |
-| `allowed_operators` | — | All operators | Global whitelist of allowed filter operators |
-| `drivers` | — | `[]` | Pluggable field resolvers |
+If you find this package useful in your day-to-day development, please consider [sponsoring my work](https://github.com/sponsors/VictorMGomes) or leaving a ⭐ on the repository. Your support directly helps keep this project actively maintained and free!
 
 ---
 
-## Security & Visibility
+## Community & Guidelines
 
-The package is strictly bounded by your model's visibility configuration to prevent data leaks.
-
-1. **`$visible` (Allow-list):** If defined, only these columns can be filtered, sorted, or selected.
-2. **`$hidden` (Deny-list):** Columns in this array are strictly forbidden from all query operations.
-
----
-
-## Pluggable Drivers
-
-Extend the package to handle custom database behaviors by defining a Resolver.
-
-```php
-// config/query-params.php
-'drivers' => [
-    'translatable' => \App\Support\QueryDrivers\TranslationDriver::class,
-],
-```
-
-Your driver must implement the `Victormgomes\QueryParams\Contracts\FieldResolver` interface.
+- [Upgrading Guide](UPGRADING.md)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [Support & Help](SUPPORT.md)
 
 ---
 

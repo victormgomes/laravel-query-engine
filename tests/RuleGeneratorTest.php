@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Victormgomes\QueryParams\Support\RuleGenerator;
 
-it('generates basic rules when resources are empty', function () {
+it('generates basic rules when resources are empty', function (): void {
     $resources = [
         'filters' => [],
         'sorts' => [],
@@ -20,7 +20,7 @@ it('generates basic rules when resources are empty', function () {
         ->and($rules)->toHaveKey('includes', ['sometimes', 'array']);
 });
 
-it('generates specific array rules when resources have items', function () {
+it('generates specific array rules when resources have items', function (): void {
     $resources = [
         'filters' => ['name' => ['operations' => ['eq'], 'type' => 'string']],
         'sorts' => ['created_at' => ['operations' => ['asc', 'desc']]],

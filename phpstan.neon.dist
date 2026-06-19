@@ -1,10 +1,11 @@
-includes:
-    - phpstan-baseline.neon
-
 parameters:
     level: 5
     paths:
         - src
         - config
         - database
+    ignoreErrors:
+        -
+            message: "#^Called 'env' outside of the config directory#"
+            path: config/query-params.php
     tmpDir: build/phpstan

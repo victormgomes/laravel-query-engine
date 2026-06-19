@@ -8,7 +8,7 @@ use Victormgomes\QueryParams\Enums\Operators;
 use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Tests\Models\Post;
 
-it('normalizes simple filters', function () {
+it('normalizes simple filters', function (): void {
     $request = new Request([
         'filters' => [
             'name' => 'Victor',
@@ -26,7 +26,7 @@ it('normalizes simple filters', function () {
     ]);
 });
 
-it('normalizes filters with operators', function () {
+it('normalizes filters with operators', function (): void {
     $request = new Request([
         'filters' => [
             'age' => [
@@ -46,21 +46,21 @@ it('normalizes filters with operators', function () {
     ]);
 });
 
-it('normalizes sorts as array', function () {
+it('normalizes sorts as array', function (): void {
     $request = new Request(['sorts' => ['name' => 'desc']]);
     QueryNormalizer::normalize($request);
 
     expect($request->get(AssociatedIndex::SORTS->value))->toBe(['name' => 'desc']);
 });
 
-it('normalizes sorts from JSON', function () {
+it('normalizes sorts from JSON', function (): void {
     $request = new Request(['sorts' => '{"name":"desc"}']);
     QueryNormalizer::normalize($request);
 
     expect($request->get(AssociatedIndex::SORTS->value))->toBe(['name' => 'desc']);
 });
 
-it('normalizes page as array', function () {
+it('normalizes page as array', function (): void {
     $request = new Request(['page' => ['number' => 3, 'limit' => 25]]);
     QueryNormalizer::normalize($request);
 
@@ -70,7 +70,7 @@ it('normalizes page as array', function () {
     ]);
 });
 
-it('decodes JSON filters with in operator', function () {
+it('decodes JSON filters with in operator', function (): void {
     $request = new Request(['filters' => '{"id":{"in":[1,2,3]}}']);
     QueryNormalizer::normalize($request);
 
@@ -79,7 +79,7 @@ it('decodes JSON filters with in operator', function () {
     ]);
 });
 
-it('decodes JSON filters with multiple operators', function () {
+it('decodes JSON filters with multiple operators', function (): void {
     $request = new Request(['filters' => '{"name":{"eq":"Victor"},"views":{"gt":5}}']);
     QueryNormalizer::normalize($request);
 
@@ -89,7 +89,7 @@ it('decodes JSON filters with multiple operators', function () {
     ]);
 });
 
-it('decodes JSON includes with shorthand list', function () {
+it('decodes JSON includes with shorthand list', function (): void {
     $request = new Request(['includes' => '{"author":["name","email"]}']);
     QueryNormalizer::normalize($request);
 
@@ -98,14 +98,14 @@ it('decodes JSON includes with shorthand list', function () {
     ]);
 });
 
-it('decodes JSON includes as array', function () {
+it('decodes JSON includes as array', function (): void {
     $request = new Request(['includes' => '["author","comments"]']);
     QueryNormalizer::normalize($request);
 
     expect($request->get(AssociatedIndex::INCLUDES->value))->toBe(['author', 'comments']);
 });
 
-it('decodes JSON page', function () {
+it('decodes JSON page', function (): void {
     $request = new Request(['page' => '{"number":1,"limit":10}']);
     QueryNormalizer::normalize($request);
 
@@ -115,14 +115,14 @@ it('decodes JSON page', function () {
     ]);
 });
 
-it('decodes JSON fields', function () {
+it('decodes JSON fields', function (): void {
     $request = new Request(['fields' => '["id","title","content"]']);
     QueryNormalizer::normalize($request);
 
     expect($request->get(AssociatedIndex::FIELDS->value))->toBe(['id', 'title', 'content']);
 });
 
-it('wraps empty or null strings in eq operator during normalization', function () {
+it('wraps empty or null strings in eq operator during normalization', function (): void {
     $request = new Request([
         'filters' => [
             'views' => '',

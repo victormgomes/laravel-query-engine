@@ -89,7 +89,7 @@ class QueryBuilder
             $with = [];
             foreach ((array) $includes as $key => $value) {
                 if (is_string($key) && is_array($value)) {
-                    $with[$key] = function ($query) use ($value) {
+                    $with[$key] = function ($query) use ($value): void {
                         if (! empty($value['fields'])) {
                             $query->select($value['fields']);
                         }

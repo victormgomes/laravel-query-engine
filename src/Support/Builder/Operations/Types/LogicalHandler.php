@@ -18,21 +18,21 @@ class LogicalHandler implements FilterOperation
         }
 
         match ($operator) {
-            Operators::OR => $query->where(function ($q) use ($value) {
+            Operators::OR => $query->where(function ($q) use ($value): void {
                 foreach ($value as $subField => $subOps) {
                     foreach ((array) $subOps as $op => $val) {
                         Filter::build($q, $subField, $op, $val);
                     }
                 }
             }),
-            Operators::AND => (function () use ($query, $value) {
+            Operators::AND => (function () use ($query, $value): void {
                 foreach ($value as $subField => $subOps) {
                     foreach ((array) $subOps as $op => $val) {
                         Filter::build($query, $subField, $op, $val);
                     }
                 }
             })(),
-            Operators::NOT => $query->whereNot(function ($q) use ($value) {
+            Operators::NOT => $query->whereNot(function ($q) use ($value): void {
                 foreach ($value as $subField => $subOps) {
                     foreach ((array) $subOps as $op => $val) {
                         Filter::build($q, $subField, $op, $val);

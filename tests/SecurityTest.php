@@ -2,15 +2,18 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Validation\ValidationException;
 use Victormgomes\QueryParams\Enums\AssociatedIndex;
+use Victormgomes\QueryParams\QueryBuilder;
 use Victormgomes\QueryParams\Rules;
 use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Support\Resource;
 use Victormgomes\QueryParams\Tests\Models\Post;
 
-it('respects globally disabled features in resource generation', function () {
+it('respects globally disabled features in resource generation', function (): void {
     Config::set('query-params.features.includes', false);
     Config::set('query-params.features.filters', false);
 
@@ -21,7 +24,7 @@ it('respects globally disabled features in resource generation', function () {
     expect($resource['sorts'])->not->toBeEmpty();
 });
 
-it('removes disabled features from the request during normalization', function () {
+it('removes disabled features from the request during normalization', function (): void {
     Config::set('query-params.features.includes', false);
     Config::set('query-params.features.filters', false);
 
@@ -38,7 +41,7 @@ it('removes disabled features from the request during normalization', function (
     expect($request->has(AssociatedIndex::SORTS->value))->toBeTrue();
 });
 
-it('respects allowed operators whitelist in rule generation', function () {
+it('respects allowed operators whitelist in rule generation', function (): void {
     Config::set('query-params.allowed_operators', ['eq', 'like']);
 
     $rules = Rules::generate(Post::class);
@@ -49,7 +52,7 @@ it('respects allowed operators whitelist in rule generation', function () {
     expect($rules)->not->toHaveKey('filters.title.fts');
 });
 
-it('strips non-whitelisted operators during normalization', function () {
+it('strips non-whitelisted operators during normalization', function (): void {
     Config::set('query-params.allowed_operators', ['eq', 'like']);
 
     $request = new Request([
@@ -72,4 +75,26 @@ it('strips non-whitelisted operators during normalization', function () {
     expect($filters['views'])->toHaveKey('eq');
     expect($filters['views'])->not->toHaveKey('gt');
     expect($filters)->not->toHaveKey('title');
+});
+
+it('rejects top-level limit parameter under strict rule validation', function (): void {
+    $request = new class extends FormRequest
+    {
+        public function authorize(): bool
+        {
+            return true;
+        }
+
+        public function rules(): array
+        {
+            return ['page' => 'sometimes|array'];
+        }
+    };
+    $request->initialize(['limit' => 25]);
+
+    $this->app->instance('request', $request);
+
+    // If we call paginateQuery, it will check the rules and find an unexpected 'limit' parameter
+    expect(fn () => QueryBuilder::paginateQuery(Post::class, $request))
+        ->toThrow(ValidationException::class);
 });

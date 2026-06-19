@@ -5,19 +5,21 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Victormgomes\QueryParams\Attributes\MapQueryParams;
 use Victormgomes\QueryParams\Enums\AssociatedIndex;
 use Victormgomes\QueryParams\QueryBuilder;
 use Victormgomes\QueryParams\Support\ModelRegistry;
 use Victormgomes\QueryParams\Support\QueryNormalizer;
+use Victormgomes\QueryParams\Tests\Models\Author;
 use Victormgomes\QueryParams\Tests\Models\Post;
 
 // ---------------------------------------------------------------------- //
 //  Eloquent Builder :: paginateQuery() macro                             //
 // ---------------------------------------------------------------------- //
 
-it('can call paginateQuery macro on model via static call', function () {
+it('can call paginateQuery macro on model via static call', function (): void {
     $request = new Request([
         'filters' => ['views' => ['gt' => 0]],
         'page' => ['number' => 1, 'limit' => 10],
@@ -30,7 +32,7 @@ it('can call paginateQuery macro on model via static call', function () {
     expect($result)->toBeInstanceOf(LengthAwarePaginator::class);
 });
 
-it('can call paginateQuery macro with custom request', function () {
+it('can call paginateQuery macro with custom request', function (): void {
     $request = new Request([
         'filters' => ['views' => ['gt' => 0]],
         'page' => ['number' => 1, 'limit' => 5],
@@ -46,7 +48,7 @@ it('can call paginateQuery macro with custom request', function () {
 //  QueryBuilder :: macro() system                                        //
 // ---------------------------------------------------------------------- //
 
-it('can register and call a custom macro on QueryBuilder', function () {
+it('can register and call a custom macro on QueryBuilder', function (): void {
     QueryBuilder::macro('ping', function () {
         return 'pong';
     });
@@ -54,7 +56,7 @@ it('can register and call a custom macro on QueryBuilder', function () {
     expect(QueryBuilder::ping())->toBe('pong');
 });
 
-it('can register and call a macro with parameters', function () {
+it('can register and call a macro with parameters', function (): void {
     QueryBuilder::macro('greet', function (string $name) {
         return "Hello, {$name}!";
     });
@@ -66,13 +68,13 @@ it('can register and call a macro with parameters', function () {
 //  Global request-model registry (ModelRegistry)                          //
 // ---------------------------------------------------------------------- //
 
-it('can register and resolve request-model mapping', function () {
+it('can register and resolve request-model mapping', function (): void {
     ModelRegistry::register(stdClass::class, Post::class);
 
     expect(ModelRegistry::resolveRequest(stdClass::class))->toBe(Post::class);
 });
 
-it('returns null for unregistered request', function () {
+it('returns null for unregistered request', function (): void {
     expect(ModelRegistry::resolveRequest('NonExistentRequest'))->toBeNull();
 });
 
@@ -80,7 +82,7 @@ it('returns null for unregistered request', function () {
 //  ModelRegistry :: resolveFrom()                                        //
 // ---------------------------------------------------------------------- //
 
-it('resolves model from global registry first', function () {
+it('resolves model from global registry first', function (): void {
     $request = new class extends FormRequest
     {
         public function authorize(): bool
@@ -94,7 +96,7 @@ it('resolves model from global registry first', function () {
     expect(ModelRegistry::resolveFrom($request))->toBe(Post::class);
 });
 
-it('resolves model from #[MapQueryParams] attribute as fallback', function () {
+it('resolves model from #[MapQueryParams] attribute as fallback', function (): void {
     $request = new #[MapQueryParams(Post::class)] class extends FormRequest
     {
         public function authorize(): bool
@@ -106,7 +108,7 @@ it('resolves model from #[MapQueryParams] attribute as fallback', function () {
     expect(ModelRegistry::resolveFrom($request))->toBe(Post::class);
 });
 
-it('resolves model from model() method as second fallback', function () {
+it('resolves model from model() method as second fallback', function (): void {
     $request = new class extends FormRequest
     {
         public function authorize(): bool
@@ -123,7 +125,7 @@ it('resolves model from model() method as second fallback', function () {
     expect(ModelRegistry::resolveFrom($request))->toBe(Post::class);
 });
 
-it('returns null when no model is resolved', function () {
+it('returns null when no model is resolved', function (): void {
     $request = new class extends FormRequest
     {
         public function authorize(): bool
@@ -139,7 +141,7 @@ it('returns null when no model is resolved', function () {
 //  QueryBuilder :: apply()                                                //
 // ---------------------------------------------------------------------- //
 
-it('apply returns a Builder without pagination', function () {
+it('apply returns a Builder without pagination', function (): void {
     $request = new Request([
         'filters' => ['views' => ['gt' => 0]],
     ]);
@@ -150,7 +152,7 @@ it('apply returns a Builder without pagination', function () {
     expect($result->getQuery()->wheres)->not->toBeEmpty();
 });
 
-it('buildQuery applies sorts from request', function () {
+it('buildQuery applies sorts from request', function (): void {
     $request = new Request([
         'sorts' => ['created_at' => 'desc'],
     ]);
@@ -167,7 +169,7 @@ it('buildQuery applies sorts from request', function () {
 //  queryParamRules() mixin method                                        //
 // ---------------------------------------------------------------------- //
 
-it('queryParamRules returns rules when model is registered', function () {
+it('queryParamRules returns rules when model is registered', function (): void {
     $request = new class extends FormRequest
     {
         public function authorize(): bool
@@ -184,7 +186,7 @@ it('queryParamRules returns rules when model is registered', function () {
     expect($rules)->toHaveKey('filters');
 });
 
-it('queryParamRules returns empty array when no model is resolved', function () {
+it('queryParamRules returns empty array when no model is resolved', function (): void {
     $request = new class extends FormRequest
     {
         public function authorize(): bool
@@ -203,7 +205,7 @@ it('queryParamRules returns empty array when no model is resolved', function () 
 //  Backward compatibility                                                //
 // ---------------------------------------------------------------------- //
 
-it('existing QueryBuilder::paginateQuery still works', function () {
+it('existing QueryBuilder::paginateQuery still works', function (): void {
     $request = new Request([
         'filters' => ['views' => ['gt' => 0]],
         'page' => ['number' => 1, 'limit' => 10],
@@ -214,7 +216,7 @@ it('existing QueryBuilder::paginateQuery still works', function () {
     expect($result)->toBeInstanceOf(LengthAwarePaginator::class);
 });
 
-it('existing QueryBuilder::normalize still works', function () {
+it('existing QueryBuilder::normalize still works', function (): void {
     $request = new Request([
         'filters' => ['name' => ['eq' => 'Victor']],
     ]);
@@ -229,7 +231,7 @@ it('existing QueryBuilder::normalize still works', function () {
 //  FormRequest auto-* (integration)                                      //
 // ---------------------------------------------------------------------- //
 
-it('auto-normalizes globally registered FormRequests', function () {
+it('auto-normalizes globally registered FormRequests', function (): void {
     $request = new class extends FormRequest
     {
         public function authorize(): bool
@@ -245,7 +247,7 @@ it('auto-normalizes globally registered FormRequests', function () {
     ModelRegistry::register($request::class, Post::class);
 
     // Simulate container resolution to trigger the resolving hook
-    $this->app->resolving(FormRequest::class, function ($req) {
+    $this->app->resolving(FormRequest::class, function ($req): void {
         // Our service provider already does this
     });
     $this->app->instance(FormRequest::class, $request);
@@ -257,7 +259,7 @@ it('auto-normalizes globally registered FormRequests', function () {
     expect($request->get('filters'))->toHaveKey('title');
 });
 
-it('auto-generates rules for globally registered FormRequests via mixin', function () {
+it('auto-generates rules for globally registered FormRequests via mixin', function (): void {
     $request = new class extends FormRequest
     {
         public function authorize(): bool
@@ -273,4 +275,42 @@ it('auto-generates rules for globally registered FormRequests via mixin', functi
 
     expect($rules)->toBeArray();
     expect($rules)->toHaveKey('filters');
+});
+
+it('supports cursor pagination via cursorPaginateQuery macro', function (): void {
+    $author = Author::create(['name' => 'Victor']);
+
+    for ($i = 1; $i <= 5; $i++) {
+        Post::create([
+            'author_id' => $author->id,
+            'title' => "Post {$i}",
+            'views' => $i * 10,
+        ]);
+    }
+
+    // First page request
+    $request = new Request([
+        'page' => ['limit' => 2],
+    ]);
+
+    $paginator1 = Post::cursorPaginateQuery($request);
+
+    expect($paginator1)->toBeInstanceOf(CursorPaginator::class);
+    expect($paginator1->count())->toBe(2);
+    expect($paginator1->hasMorePages())->toBeTrue();
+
+    $nextCursor = $paginator1->nextCursor()->encode();
+
+    // Second page request with cursor
+    $request2 = new Request([
+        'page' => [
+            'limit' => 2,
+            'cursor' => $nextCursor,
+        ],
+    ]);
+
+    $paginator2 = Post::cursorPaginateQuery($request2);
+
+    expect($paginator2->count())->toBe(2);
+    expect($paginator2->first()->title)->toBe('Post 3');
 });

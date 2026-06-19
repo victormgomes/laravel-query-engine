@@ -70,7 +70,7 @@ class QueryParamsServiceProvider extends PackageServiceProvider
             return Resource::getFilterSchema(get_class($this->getModel()));
         });
 
-        $this->app->resolving(FormRequest::class, function (FormRequest $request) {
+        $this->app->resolving(FormRequest::class, function (FormRequest $request): void {
             $modelFQCN = ModelRegistry::resolveFrom($request);
 
             if ($modelFQCN !== null) {

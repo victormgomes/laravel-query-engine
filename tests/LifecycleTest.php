@@ -11,7 +11,7 @@ use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Tests\Models\Author;
 use Victormgomes\QueryParams\Tests\Models\Post;
 
-it('tests the complete lifecycle from URL to JSON response', function () {
+it('tests the complete lifecycle from URL to JSON response', function (): void {
     // 1. Fresh Database State
     Schema::disableForeignKeyConstraints();
     DB::table('posts')->truncate();

@@ -8,6 +8,7 @@ composer.lock
 # Logs
 npm-debug.log
 yarn-error.log
+logs
 
 # Caches
 .phpunit.cache
@@ -28,5 +29,7 @@ _ide_helper_models.php
 phpunit.xml
 phpstan.neon
 testbench.yaml
-/docs
 /coverage
+.env
+.env.backup
+.DS_Store
