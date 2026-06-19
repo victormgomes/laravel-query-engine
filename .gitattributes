@@ -1,21 +1,40 @@
 # Path-based git attributes
 # https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
 
-# Ignore all test and documentation with "export-ignore".
-/.github            export-ignore
-/.gitattributes     export-ignore
-/.gitignore         export-ignore
-/phpunit.xml.dist   export-ignore
-/art                export-ignore
-/docs               export-ignore
-/tests              export-ignore
-/workbench          export-ignore
-/.editorconfig      export-ignore
-/.php_cs.dist.php   export-ignore
-/psalm.xml          export-ignore
-/psalm.xml.dist     export-ignore
-/testbench.yaml     export-ignore
-/UPGRADING.md       export-ignore
-/phpstan.neon.dist  export-ignore
-/phpstan-baseline.neon  export-ignore
-/docker-compose.test.yml export-ignore
+# Git metadata
+/.gitattributes                 export-ignore
+/.gitignore                     export-ignore
+
+# CI/CD
+/.github                        export-ignore
+
+# Development environment
+/.editorconfig                  export-ignore
+/Dockerfile                     export-ignore
+/docker-compose.yml             export-ignore
+/docker-compose.test.yml        export-ignore
+
+# Tests
+/tests                          export-ignore
+/phpunit.xml.dist               export-ignore
+/.phpunit.cache                 export-ignore
+/testbench.yaml                 export-ignore
+
+# Static analysis & code quality
+/phpstan.neon.dist              export-ignore
+/phpstan-baseline.neon          export-ignore
+/phpinsights.php                export-ignore
+/rector.php                     export-ignore
+/psalm.xml                      export-ignore
+/psalm.xml.dist                 export-ignore
+/composer-require-checker.json  export-ignore
+/.php_cs.dist.php               export-ignore
+
+# Development-only directories
+/art                            export-ignore
+/workbench                      export-ignore
+/build                          export-ignore
+/logs                           export-ignore
+
+# Composer library
+/composer.lock                  export-ignore
