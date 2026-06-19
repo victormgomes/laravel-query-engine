@@ -35,6 +35,7 @@
 /workbench                      export-ignore
 /build                          export-ignore
 /logs                           export-ignore
+/.agents                        export-ignore
 
 # Composer library
 /composer.lock                  export-ignore
