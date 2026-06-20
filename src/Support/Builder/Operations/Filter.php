@@ -9,6 +9,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Victormgomes\QueryParams\Enums\Operators;
 use Victormgomes\QueryParams\Support\Builder\Operations\Types\ArrayHandler;
 use Victormgomes\QueryParams\Support\Builder\Operations\Types\ComparisonHandler;
+use Victormgomes\QueryParams\Support\Builder\Operations\Types\DateHandler;
 use Victormgomes\QueryParams\Support\Builder\Operations\Types\FilterOperation;
 use Victormgomes\QueryParams\Support\Builder\Operations\Types\LogicalHandler;
 use Victormgomes\QueryParams\Support\Builder\Operations\Types\NullHandler;
@@ -42,7 +43,7 @@ class Filter
         Operators::CONTAINS->value => PostgresHandler::class,
         Operators::CONTAINEDBY->value => PostgresHandler::class,
         Operators::OVERLAP->value => PostgresHandler::class,
-        Operators::FTS->value => PostgresHandler::class,
+        Operators::FTS->value => StringHandler::class,
 
         Operators::OR->value => LogicalHandler::class,
         Operators::AND->value => LogicalHandler::class,
@@ -50,6 +51,12 @@ class Filter
 
         Operators::EXISTS->value => RelationHandler::class,
         Operators::NOTEXISTS->value => RelationHandler::class,
+
+        Operators::YEAR->value => DateHandler::class,
+        Operators::MONTH->value => DateHandler::class,
+        Operators::DAY->value => DateHandler::class,
+        Operators::DATE->value => DateHandler::class,
+        Operators::TIME->value => DateHandler::class,
     ];
 
     private static array $handlerInstances = [];

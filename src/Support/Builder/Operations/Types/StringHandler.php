@@ -20,6 +20,7 @@ class StringHandler implements FilterOperation
             Operators::NOTLIKE => $query->where($field, 'not like', "%{$value}%"),
             Operators::ILIKE => $isPgsql ? $query->where($field, 'ilike', "%{$value}%") : $query->where($field, 'like', "%{$value}%"),
             Operators::NOTILIKE => $isPgsql ? $query->where($field, 'not ilike', "%{$value}%") : $query->where($field, 'not like', "%{$value}%"),
+            Operators::FTS => $query->whereFullText($field, (string) $value),
             default => null,
         };
     }

@@ -33,7 +33,6 @@ class PostgresHandler implements FilterOperation
         match ($operator) {
             Operators::CONTAINEDBY => $query->whereRaw("? <@ {$wrappedField}", [$value]),
             Operators::OVERLAP => $query->whereRaw("? && {$wrappedField}", [$value]),
-            Operators::FTS => $query->whereRaw("to_tsvector({$wrappedField}) @@ plainto_tsquery(?)", [$value]),
             default => null,
         };
         // @codeCoverageIgnoreEnd

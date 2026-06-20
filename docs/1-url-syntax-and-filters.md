@@ -41,8 +41,10 @@ The standard PHP/Laravel nested array syntax. This is ideal for traditional HTML
 | `between`, `nbetween` | Range queries | `?filters[price][between]=10,50` | Universal |
 | `contains` | JSON/Array contains | `?filters[tags][contains]=urgent` | Universal |
 | `exists`, `notexists` | Relationship existence | `?filters[posts][exists]=true` | Universal |
+| `year`, `month`, `day` | Date component match | `?filters[created_at][year]=2024` | Universal |
+| `date`, `time` | Exact date/time match | `?filters[created_at][date]=2024-01-01` | Universal |
 | `containedby` | JSON array contained by | `?filters[tags][containedby]=["urgent"]` | PostgreSQL only |
 | `overlap` | JSON array overlap | `?filters[tags][overlap]=["urgent"]` | PostgreSQL only |
-| `fts` | Full-text search | `?filters[content][fts]=laravel` | PostgreSQL only |
+| `fts` | Full-text search | `?filters[content][fts]=laravel` | Universal |
 
 *(Note: PostgreSQL-specific operators securely abort with an `InvalidArgumentException` if executed on non-PostgreSQL engines to prevent raw SQL syntax errors).*

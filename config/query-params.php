@@ -92,5 +92,6 @@ return [
         'eq', 'ne', 'gt', 'gte', 'lt', 'lte', 'in', 'nin', 'null', 'notnull',
         'between', 'nbetween', 'like', 'notlike', 'ilike', 'notilike', 'contains',
         'containedby', 'overlap', 'fts', 'or', 'and', 'not', 'exists', 'notexists',
+        'year', 'month', 'day', 'date', 'time',
     ],
 ];
