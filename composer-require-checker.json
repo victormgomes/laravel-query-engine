@@ -8,6 +8,7 @@
         "request",
         "Illuminate\\Console\\Command",
         "Illuminate\\Database\\Eloquent\\Builder",
+        "Illuminate\\Database\\Eloquent\\Casts\\Attribute",
         "Illuminate\\Database\\Eloquent\\Model",
         "Illuminate\\Database\\Eloquent\\ModelInspector",
         "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",

@@ -13,6 +13,10 @@ use Victormgomes\QueryParams\Support\QueryNormalizer;
 use Victormgomes\QueryParams\Support\Resource;
 use Victormgomes\QueryParams\Tests\Models\Post;
 
+beforeEach(function (): void {
+    Resource::clearCache();
+});
+
 it('respects globally disabled features in resource generation', function (): void {
     Config::set('query-params.features.includes', false);
     Config::set('query-params.features.filters', false);

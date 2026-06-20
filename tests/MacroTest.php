@@ -314,3 +314,54 @@ it('supports cursor pagination via cursorPaginateQuery macro', function (): void
     expect($paginator2->count())->toBe(2);
     expect($paginator2->first()->title)->toBe('Post 3');
 });
+
+// ---------------------------------------------------------------------- //
+//  Advanced Features (Accessors, Scopes, Aggregations)                   //
+// ---------------------------------------------------------------------- //
+
+it('supports dynamic accessors on pagination', function (): void {
+    $author = Author::create(['name' => 'Victor']);
+    Post::create(['author_id' => $author->id, 'title' => 'Test Post']);
+
+    $request = new Request([
+        'fields' => ['id', 'title', 'virtual_attribute', 'virtual_legacy'],
+    ]);
+
+    $paginator = Post::paginateQuery($request);
+
+    $post = $paginator->first();
+    expect($post->toArray())->toHaveKey('virtual_attribute', 'virtual');
+    expect($post->toArray())->toHaveKey('virtual_legacy', 'legacy');
+});
+
+it('supports local scopes securely', function (): void {
+    $author = Author::create(['name' => 'Victor']);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 1', 'is_published' => false, 'views' => 10]);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 2', 'is_published' => true, 'views' => 10]);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 3', 'is_published' => true, 'views' => 50]);
+
+    // 1. Scope sem parametro
+    $request1 = new Request(['filters' => ['published' => true]]);
+    $results1 = QueryBuilder::buildQuery(Post::class, $request1)->get();
+    expect($results1)->toHaveCount(2);
+
+    // 2. Scope com parametro
+    $request2 = new Request(['filters' => ['popular' => ['eq' => 50]]]);
+    $results2 = QueryBuilder::buildQuery(Post::class, $request2)->get();
+    expect($results2)->toHaveCount(1);
+    expect($results2->first()->title)->toBe('Post 3');
+});
+
+it('supports aggregations dynamically as virtual fields', function (): void {
+    $author = Author::create(['name' => 'Victor']);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 1']);
+
+    $request = new Request([
+        'fields' => ['title', 'author_count'], // explicitly allowed in QueryOptions
+    ]);
+
+    $results = QueryBuilder::buildQuery(Post::class, $request)->get();
+    $post = $results->first();
+
+    expect($post->author_count)->toBe(1);
+});
