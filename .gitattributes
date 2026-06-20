@@ -29,6 +29,9 @@
 /psalm.xml.dist                 export-ignore
 /composer-require-checker.json  export-ignore
 /.php_cs.dist.php               export-ignore
+/infection.json.dist            export-ignore
+/.prettierrc                    export-ignore
+/captainhook.json               export-ignore
 
 # Development-only directories
 /art                            export-ignore

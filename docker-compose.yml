@@ -9,4 +9,29 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+    environment:
+      PAO_FORCE: true
     command: tail -f /dev/null
+
+  actionlint:
+    image: rhysd/actionlint:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  hadolint:
+    image: hadolint/hadolint:latest-alpine
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  markdownlint:
+    image: davidanson/markdownlint-cli2:alpine
+    volumes:
+      - .:/workspace
+
+  jsonlint:
+    image: node:alpine
+    volumes:
+      - .:/app
+    working_dir: /app
