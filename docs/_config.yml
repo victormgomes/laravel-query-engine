@@ -1,0 +1,4 @@
+theme: jekyll-theme-cayman
+title: Query Params Documentation
+description: Schema-aware API filtering engine for Laravel.
+show_downloads: true

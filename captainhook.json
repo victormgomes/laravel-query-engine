@@ -41,7 +41,7 @@
                 ]
             },
             {
-                "action": "act -j actionlint -W .github/workflows/lint-infra.yml",
+                "action": "sudo act -j actionlint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
@@ -50,7 +50,7 @@
                 ]
             },
             {
-                "action": "act -j hadolint -W .github/workflows/lint-infra.yml",
+                "action": "sudo act -j hadolint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\ThatIs",
@@ -59,7 +59,7 @@
                 ]
             },
             {
-                "action": "act -j markdownlint -W .github/workflows/lint-infra.yml",
+                "action": "sudo act -j markdownlint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
@@ -68,7 +68,7 @@
                 ]
             },
             {
-                "action": "act -j jsonlint -W .github/workflows/lint-infra.yml",
+                "action": "sudo act -j jsonlint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
@@ -82,7 +82,7 @@
         "enabled": true,
         "actions": [
             {
-                "action": "act -j quality -W .github/workflows/code-quality.yml",
+                "action": "sudo act -j quality -W .github/workflows/code-quality.yml",
                 "options": [],
                 "conditions": [
                     {
@@ -92,7 +92,7 @@
                 ]
             },
             {
-                "action": "act -j test -W .github/workflows/run-tests.yml",
+                "action": "sudo act -j test -W .github/workflows/run-tests.yml",
                 "options": [],
                 "conditions": [
                     {
