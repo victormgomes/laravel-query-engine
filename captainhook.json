@@ -41,7 +41,7 @@
                 ]
             },
             {
-                "action": "docker compose run --rm actionlint {$STAGED_FILES|of-type:yml}",
+                "action": "act -j actionlint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
@@ -50,18 +50,16 @@
                 ]
             },
             {
-                "action": "docker compose run --rm hadolint hadolint {$STAGED_FILES}",
+                "action": "act -j hadolint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\ThatIs",
-                        "args": [
-                            ["Dockerfile"]
-                        ]
+                        "args": [["Dockerfile"]]
                     }
                 ]
             },
             {
-                "action": "docker compose run --rm markdownlint {$STAGED_FILES|of-type:md}",
+                "action": "act -j markdownlint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
@@ -70,7 +68,7 @@
                 ]
             },
             {
-                "action": "docker compose run --rm jsonlint npx --yes prettier --check {$STAGED_FILES|of-type:json}",
+                "action": "act -j jsonlint -W .github/workflows/lint-infra.yml",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
@@ -84,7 +82,7 @@
         "enabled": true,
         "actions": [
             {
-                "action": "docker compose run --rm dev composer run check-requires",
+                "action": "act -j quality -W .github/workflows/code-quality.yml",
                 "options": [],
                 "conditions": [
                     {
@@ -94,27 +92,7 @@
                 ]
             },
             {
-                "action": "docker compose run --rm dev composer run analyse",
-                "options": [],
-                "conditions": [
-                    {
-                        "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileChanged\\OfType",
-                        "args": [["php", "json", "lock"]]
-                    }
-                ]
-            },
-            {
-                "action": "docker compose run --rm dev composer run insights -- --no-interaction",
-                "options": [],
-                "conditions": [
-                    {
-                        "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileChanged\\OfType",
-                        "args": [["php", "json", "lock"]]
-                    }
-                ]
-            },
-            {
-                "action": "docker compose run --rm dev composer run test",
+                "action": "act -j test -W .github/workflows/run-tests.yml",
                 "options": [],
                 "conditions": [
                     {

@@ -2,6 +2,10 @@ name: run-tests
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - 'v*'
     paths:
       - 'src/**.php'
       - 'tests/**.php'
@@ -10,6 +14,8 @@ on:
       - 'composer.json'
       - 'composer.lock'
   pull_request:
+    branches:
+      - main
     paths:
       - 'src/**.php'
       - 'tests/**.php'

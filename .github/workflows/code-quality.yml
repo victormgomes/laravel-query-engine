@@ -2,6 +2,21 @@ name: Code Quality & Static Analysis
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+    paths:
+      - 'src/**.php'
+      - 'tests/**.php'
+      - 'phpstan.neon.dist'
+      - 'phpinsights.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - '.github/workflows/code-quality.yml'
+  pull_request:
+    branches:
+      - main
     paths:
       - 'src/**.php'
       - 'tests/**.php'
