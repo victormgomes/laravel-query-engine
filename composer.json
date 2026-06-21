@@ -96,7 +96,8 @@
         "mutate": "vendor/bin/pest --mutate --parallel --everything --covered-only",
         "refactor": "vendor/bin/rector process",
         "refactor:dry-run": "vendor/bin/rector process --dry-run",
-        "insights": "vendor/bin/phpinsights analyse src"
+        "insights": "vendor/bin/phpinsights analyse src",
+        "act:local": "sudo act 2>&1 | tee logs/act-local.txt ; sudo docker rm -f $(sudo docker ps -aq -f name='^act-') 2>/dev/null"
     },
     "config": {
         "sort-packages": true,
