@@ -1,19 +1,20 @@
-# Documentação Oficial: Query Params
+# Official Documentation: Query Params
 
-Bem-vindo à documentação detalhada do `victormgomes/query-params`.
-Este pacote é um motor avançado de filtros e ordenação de API para Laravel, totalmente seguro e ciente do seu schema (banco de dados).
+Welcome to the detailed documentation for `victormgomes/query-params`. This package is
+an advanced API filtering and sorting engine for Laravel, fully secure
+and aware of your database schema.
 
-## 📚 Índice de Conteúdo
+## 📚 Table of Contents
 
-* [1. Sintaxe de URL e Filtros Básicos](1-url-syntax-and-filters.md)
-  *Aprenda como estruturar a URL da sua API para buscar dados, usar operadores (eq, like, in) e buscar em relacionamentos.*
+### Getting Started
 
-* [2. Uso Avançado (Atributos e Scopes)](2-advanced-usage.md)
-  *Descubra como blindar seus models com `#[QueryOptions]`, desativar operadores pesados e liberar Scopes e Aggregations.*
+- [Introduction](introduction.md) _Why this package exists and its core features._
+- [Installation & Quick Start](installation-and-quick-start.md) _How to install and immediately start using the package._
+- [Package Comparison (vs Spatie)](package-comparison.md) _An architectural comparison with `spatie/laravel-query-builder`._
 
-* [3. Configuração Global e Segurança](3-configuration-and-security.md)
-  *Entenda como o pacote protege sua API e como alterar o comportamento padrão de paginação e filtros via arquivo de config.*
+### Usage
 
----
-
-> **Atenção:** Para as instruções iniciais de Instalação (`composer require`), integração básica no seu FormRequest ou Controller e visão geral rápida, consulte sempre o [README Principal do Repositório](https://github.com/victormgomes/query-params).
+- [URL Syntax & Basic Filters](1-url-syntax-and-filters.md) _Learn how to pass parameters, JSON vs Arrays, and the supported operators._
+- [Available Model Methods](available-methods.md) _Documentation of the methods injected into your Eloquent models (e.g. `paginateQuery`)._
+- [Advanced Usage (Attributes & Scopes)](2-advanced-usage.md) _Discover how to expose Local Scopes, Accessors (`$appends`), and Aggregations (counts)._
+- [Global Configuration & Security](3-configuration-and-security.md) _Understand how the package protects your API and how to change the default behavior of pagination and filters._

@@ -1,6 +1,7 @@
 # Security Policy
 
-If you discover any security related issues, please email info@victormgomes.net instead of using the issue tracker.
+If you discover any security related issues, please email
+<info@victormgomes.net> instead of using the issue tracker.
 
 ## Supported Versions
 
