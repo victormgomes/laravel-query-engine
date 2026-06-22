@@ -1,66 +1,66 @@
 name: Infrastructure Linting
 
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*'
-    paths:
-      - '**/*.md'
-      - '**/*.json'
-      - 'Dockerfile'
-      - '.github/workflows/**/*.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - '**/*.md'
-      - '**/*.json'
-      - 'Dockerfile'
-      - '.github/workflows/**/*.yml'
+    push:
+        branches:
+            - main
+        tags:
+            - "v*"
+        paths:
+            - "**/*.md"
+            - "**/*.json"
+            - "Dockerfile"
+            - ".github/workflows/**/*.yml"
+    pull_request:
+        branches:
+            - main
+        paths:
+            - "**/*.md"
+            - "**/*.json"
+            - "Dockerfile"
+            - ".github/workflows/**/*.yml"
 
 jobs:
-  markdownlint:
-    name: Markdown Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Run markdownlint
-        run: npx --yes markdownlint-cli2 "**/*.md" "#vendor"
+    markdownlint:
+        name: Markdown Lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - name: Run markdownlint
+              run: npx --yes markdownlint-cli2 "**/*.md" "#vendor"
 
-  jsonlint:
-    name: JSON Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Run Prettier for JSON
-        run: npx --yes prettier --check "**/*.json" "!vendor/**"
+    jsonlint:
+        name: JSON Lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - name: Run Prettier for JSON
+              run: npx --yes prettier --check "**/*.json" "!vendor/**"
 
-  hadolint:
-    name: Dockerfile Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Hadolint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: Dockerfile
+    hadolint:
+        name: Dockerfile Lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Run Hadolint
+              uses: hadolint/hadolint-action@v3.1.0
+              with:
+                  dockerfile: Dockerfile
 
-  actionlint:
-    name: Actions Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Actionlint
-        run: |
-          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-          ./actionlint -color
+    actionlint:
+        name: Actions Lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Run Actionlint
+              run: |
+                  bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+                  ./actionlint -color
