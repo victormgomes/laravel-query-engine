@@ -7,5 +7,5 @@ parameters:
     ignoreErrors:
         -
             message: "#^Called 'env' outside of the config directory#"
-            path: config/query-engine.php
+            path: config/laravel-query-engine.php
     tmpDir: build/phpstan
