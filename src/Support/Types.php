@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support;
+namespace Victormgomes\LaravelQueryEngine\Support;
 
-use Victormgomes\QueryParams\Enums\AbstractType;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\Maps\TypesMap;
+use Victormgomes\LaravelQueryEngine\Enums\AbstractType;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Maps\TypesMap;
 
-class Types
+final class Types
 {
     public static function getOperatorTypes(): array
     {

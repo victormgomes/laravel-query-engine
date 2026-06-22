@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Tests;
+namespace Victormgomes\LaravelQueryEngine\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Victormgomes\QueryParams\QueryParamsServiceProvider;
+use Victormgomes\LaravelQueryEngine\LaravelQueryEngineServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -15,14 +15,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Victormgomes\\QueryParams\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Victormgomes\\LaravelQueryEngine\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            QueryParamsServiceProvider::class,
+            LaravelQueryEngineServiceProvider::class,
         ];
     }
 

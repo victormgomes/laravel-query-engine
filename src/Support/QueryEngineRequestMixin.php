@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support;
+namespace Victormgomes\LaravelQueryEngine\Support;
 
-use Victormgomes\QueryParams\Rules;
+use Victormgomes\LaravelQueryEngine\Rules;
 
-class QueryParamsRequestMixin
+class QueryEngineRequestMixin
 {
     public function rules(): \Closure
     {

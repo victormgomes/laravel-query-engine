@@ -32,7 +32,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | When enabled, the package will log the generated rules for each
-    | form request that uses MapQueryParams.
+    | form request that uses MapQueryEngine.
     |
     */
     'debug' => env('QUERY_PARAMS_DEBUG', false),
@@ -92,5 +92,6 @@ return [
         'eq', 'ne', 'gt', 'gte', 'lt', 'lte', 'in', 'nin', 'null', 'notnull',
         'between', 'nbetween', 'like', 'notlike', 'ilike', 'notilike', 'contains',
         'containedby', 'overlap', 'fts', 'or', 'and', 'not', 'exists', 'notexists',
+        'year', 'month', 'day', 'date', 'time',
     ],
 ];

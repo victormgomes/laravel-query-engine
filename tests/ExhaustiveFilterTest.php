@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Support\Builder\Operations\Filter;
-use Victormgomes\QueryParams\Tests\Models\Author;
-use Victormgomes\QueryParams\Tests\Models\Post;
-use Victormgomes\QueryParams\Tests\Models\SoftDeletablePost;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\QueryBuilder;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Filter;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Author;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Post;
+use Victormgomes\LaravelQueryEngine\Tests\Models\SoftDeletablePost;
 
 it('applies all basic comparison operators', function (string $operator, string $expectedSql): void {
     $query = Post::query();
@@ -86,9 +86,24 @@ it('aborts safely when using postgres json operators on sqlite', function (strin
 it('aborts safely when using full-text search operator on sqlite', function (): void {
     $query = Post::query();
 
-    expect(fn () => Filter::build($query, 'title', Operators::FTS->value, 'search term'))
-        ->toThrow(InvalidArgumentException::class, "The 'fts' operator is only supported on PostgreSQL databases.");
+    expect(function () use ($query): void {
+        Filter::build($query, 'title', Operators::FTS->value, 'search term');
+        $query->toSql();
+    })->toThrow(RuntimeException::class, 'This database engine does not support fulltext search operations.');
 });
+
+it('applies date modifiers operators', function (string $operator, string $expectedSql): void {
+    $query = Post::query();
+    Filter::build($query, 'published_at', $operator, '2024');
+
+    expect($query->toSql())->toContain($expectedSql);
+})->with([
+    [Operators::YEAR->value, 'strftime(\'%Y\''],
+    [Operators::MONTH->value, 'strftime(\'%m\''],
+    [Operators::DAY->value, 'strftime(\'%d\''],
+    [Operators::DATE->value, 'strftime(\'%Y-%m-%d\''],
+    [Operators::TIME->value, 'strftime(\'%H:%M:%S\''],
+]);
 
 it('supports soft deletes via with_deleted and only_deleted filters', function (): void {
     $author = Author::create(['name' => 'Victor']);

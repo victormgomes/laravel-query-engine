@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams;
+namespace Victormgomes\LaravelQueryEngine;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -10,19 +10,19 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Victormgomes\QueryParams\Commands\CacheRulesCommand;
-use Victormgomes\QueryParams\Commands\ClearRulesCacheCommand;
-use Victormgomes\QueryParams\Support\ModelRegistry;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Support\QueryParamsRequestMixin;
-use Victormgomes\QueryParams\Support\Resource;
+use Victormgomes\LaravelQueryEngine\Commands\CacheRulesCommand;
+use Victormgomes\LaravelQueryEngine\Commands\ClearRulesCacheCommand;
+use Victormgomes\LaravelQueryEngine\Support\ModelRegistry;
+use Victormgomes\LaravelQueryEngine\Support\QueryEngineRequestMixin;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Support\Resource;
 
-class QueryParamsServiceProvider extends PackageServiceProvider
+class LaravelQueryEngineServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('query-params')
+            ->name('laravel-query-engine')
             ->hasConfigFile()
             ->hasCommands([
                 CacheRulesCommand::class,
@@ -78,6 +78,6 @@ class QueryParamsServiceProvider extends PackageServiceProvider
             }
         });
 
-        FormRequest::mixin(new QueryParamsRequestMixin);
+        FormRequest::mixin(new QueryEngineRequestMixin);
     }
 }

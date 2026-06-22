@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Builder\Operations\Types;
+namespace Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Victormgomes\QueryParams\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
 
 class StringHandler implements FilterOperation
 {
@@ -20,6 +20,7 @@ class StringHandler implements FilterOperation
             Operators::NOTLIKE => $query->where($field, 'not like', "%{$value}%"),
             Operators::ILIKE => $isPgsql ? $query->where($field, 'ilike', "%{$value}%") : $query->where($field, 'like', "%{$value}%"),
             Operators::NOTILIKE => $isPgsql ? $query->where($field, 'not ilike', "%{$value}%") : $query->where($field, 'not like', "%{$value}%"),
+            Operators::FTS => $query->whereFullText($field, (string) $value),
             default => null,
         };
     }

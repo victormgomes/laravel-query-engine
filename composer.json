@@ -1,29 +1,35 @@
 {
-    "name": "victormgomes/query-params",
-    "description": "Automatically generate query parameters from Eloquent models",
-    "version": "2.0.1",
+    "name": "victormgomes/laravel-query-engine",
+    "description": "Automatically generates dynamic API parameters, strict validation, and optimized queries based on Eloquent Models.",
     "keywords": [
         "Victor M. Gomes",
         "laravel",
         "eloquent",
-        "query-params",
+        "laravel-query-engine",
         "query-builder",
+        "query",
         "api",
         "rest",
+        "rest-api",
         "json-api",
         "filter",
+        "filtering",
         "sort",
+        "sorting",
         "pagination",
         "search",
         "validation",
+        "schema",
+        "type-safe",
+        "graphql",
         "relationships"
     ],
-    "homepage": "https://github.com/victormgomes/query-params",
+    "homepage": "https://github.com/victormgomes/laravel-query-engine",
     "license": "MIT",
     "support": {
-        "docs": "https://github.com/victormgomes/query-params/tree/main/docs",
-        "issues": "https://github.com/victormgomes/query-params/issues",
-        "source": "https://github.com/victormgomes/query-params"
+        "docs": "https://github.com/victormgomes/laravel-query-engine/tree/main/docs",
+        "issues": "https://github.com/victormgomes/laravel-query-engine/issues",
+        "source": "https://github.com/victormgomes/laravel-query-engine"
     },
     "funding": [
         {
@@ -41,62 +47,96 @@
     "require": {
         "php": "^8.3",
         "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^13.0",
-        "illuminate/support": "^13.0",
-        "illuminate/database": "^13.0",
-        "illuminate/http": "^13.0",
-        "illuminate/pagination": "^13.0",
-        "illuminate/validation": "^13.0",
-        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
+        "illuminate/database": "^12.0 || ^13.0",
+        "illuminate/http": "^12.0 || ^13.0",
+        "illuminate/pagination": "^12.0 || ^13.0",
+        "illuminate/validation": "^12.0 || ^13.0",
+        "illuminate/console": "^12.0 || ^13.0",
         "nesbot/carbon": "^3.0",
         "symfony/finder": "^7.0",
         "ext-filter": "*"
     },
     "require-dev": {
+        "captainhook/captainhook": "*",
+        "captainhook/plugin-composer": "*",
         "infection/infection": "^0.29",
         "larastan/larastan": "^3.0",
+        "laravel/pao": "^1.1",
         "laravel/pint": "^1.14",
         "maglnet/composer-require-checker": "^4.0",
         "nunomaduro/collision": "^8.8",
         "nunomaduro/phpinsights": "^2.11",
-        "orchestra/testbench": "^11.0||^10.0||^9.0",
+        "orchestra/testbench": "^10.0 || ^11.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-arch": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
-        "rector/rector": "^1.0|^2.0",
-        "spatie/laravel-ray": "^1.35"
+        "rector/rector": "^1.0|^2.0"
     },
     "autoload": {
         "psr-4": {
-            "Victormgomes\\QueryParams\\": "src/"
+            "Victormgomes\\LaravelQueryEngine\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Victormgomes\\QueryParams\\Tests\\": "tests/",
-            "Victormgomes\\QueryParams\\Database\\Factories\\": "database/factories/",
+            "Victormgomes\\LaravelQueryEngine\\Tests\\": "tests/",
+            "Victormgomes\\LaravelQueryEngine\\Database\\Factories\\": "database/factories/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
     "scripts": {
         "post-autoload-dump": "@composer run prepare",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "analyse": "vendor/bin/phpstan analyse",
+        "reset": "git clean -fdX && composer install",
+        "check:all": [
+            "@composer run check:php",
+            "@composer run check:markdown",
+            "@composer run check:json",
+            "@composer run check:yaml",
+            "@composer run check:types",
+            "@composer run check:requires"
+        ],
+        "format:all": [
+            "@composer run format:php",
+            "@composer run format:markdown",
+            "@composer run format:json",
+            "@composer run format:yaml"
+        ],
+        "check:php": "vendor/bin/pint --test",
+        "check:php:ci": "vendor/bin/pint --test --format=json",
+        "format:php": "vendor/bin/pint",
+        "check:markdown": "npx --yes prettier --check '**/*.md' '!vendor/**' --no-error-on-unmatched-pattern && npx --yes markdownlint-cli2 '**/*.md' '#vendor'",
+        "format:markdown": "npx --yes prettier --write '**/*.md' '!vendor/**' --no-error-on-unmatched-pattern && npx --yes markdownlint-cli2 --fix '**/*.md' '#vendor'",
+        "check:json": "npx --yes prettier --check '**/*.json' '!vendor/**' --no-error-on-unmatched-pattern",
+        "format:json": "npx --yes prettier --write '**/*.json' '!vendor/**' --no-error-on-unmatched-pattern",
+        "check:yaml": "npx --yes prettier --check '**/*.yml' '**/*.yaml' '!vendor/**' --no-error-on-unmatched-pattern",
+        "format:yaml": "npx --yes prettier --write '**/*.yml' '**/*.yaml' '!vendor/**' --no-error-on-unmatched-pattern",
+        "check:types": "vendor/bin/phpstan analyse --memory-limit=512M",
+        "check:requires": "vendor/bin/composer-require-checker check",
+        "check:requires:ci": "vendor/bin/composer-require-checker check --output=json",
+        "check:insights": "vendor/bin/phpinsights analyse src",
         "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage",
-        "format": "vendor/bin/pint",
-        "check-requires": "vendor/bin/composer-require-checker check --config-file=composer-require-checker.json composer.json",
-        "mutate": "vendor/bin/pest --mutate --parallel --everything --covered-only",
-        "refactor": "vendor/bin/rector process",
-        "insights": "vendor/bin/phpinsights analyse src"
+        "test:coverage": "vendor/bin/pest --coverage",
+        "test:mutate": "vendor/bin/pest --mutate --parallel --everything --covered-only",
+        "refactor:check": "vendor/bin/rector process --dry-run",
+        "refactor:apply": "vendor/bin/rector process",
+        "act:clean": "sudo docker rm -f $(sudo docker ps -aq -f name='^act-') 2>/dev/null ; sudo docker volume rm $(sudo docker volume ls -q -f name='^act-') 2>/dev/null",
+        "act:all": "sudo act 2>&1 | tee logs/act-all.txt ; composer run act:clean",
+        "act:lint": "sudo act -W .github/workflows/lint-infra.yml 2>&1 | tee logs/act-lint.txt ; composer run act:clean",
+        "act:tests": "sudo act -W .github/workflows/run-tests.yml 2>&1 | tee logs/act-tests.txt ; composer run act:clean",
+        "act:quality": "sudo act -W .github/workflows/code-quality.yml 2>&1 | tee logs/act-quality.txt ; composer run act:clean",
+        "act:style": "sudo act -W .github/workflows/fix-php-code-style-issues.yml 2>&1 | tee logs/act-style.txt ; composer run act:clean"
     },
     "config": {
         "sort-packages": true,
         "process-timeout": 0,
         "allow-plugins": {
+            "captainhook/plugin-composer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "infection/extension-installer": true,
             "pestphp/pest-plugin": true,
@@ -106,13 +146,13 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Victormgomes\\QueryParams\\QueryParamsServiceProvider"
+                "Victormgomes\\LaravelQueryEngine\\LaravelQueryEngineServiceProvider"
             ],
             "aliases": {
-                "QueryParams": "Victormgomes\\QueryParams\\Facades\\QueryBuilder"
+                "QueryEngine": "Victormgomes\\LaravelQueryEngine\\Facades\\QueryBuilder"
             }
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

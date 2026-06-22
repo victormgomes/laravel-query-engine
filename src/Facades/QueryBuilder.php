@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Facades;
+namespace Victormgomes\LaravelQueryEngine\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

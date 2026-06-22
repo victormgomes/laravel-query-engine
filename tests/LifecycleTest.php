@@ -5,11 +5,11 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Rules;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Tests\Models\Author;
-use Victormgomes\QueryParams\Tests\Models\Post;
+use Victormgomes\LaravelQueryEngine\QueryBuilder;
+use Victormgomes\LaravelQueryEngine\Rules;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Author;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Post;
 
 it('tests the complete lifecycle from URL to JSON response', function (): void {
     // 1. Fresh Database State

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Commands;
+namespace Victormgomes\LaravelQueryEngine\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
 class ClearRulesCacheCommand extends Command
 {
-    protected $signature = 'query-params:clear {model? : The model class to clear cache for}';
+    protected $signature = 'laravel-query-engine:clear {model? : The model class to clear cache for}';
 
     protected $description = 'Wipe all cached query parameter rules';
 
@@ -20,7 +20,7 @@ class ClearRulesCacheCommand extends Command
 
         if ($model) {
             $this->info("Clearing query parameter rules for: {$model}");
-            $cacheKey = 'query-params.rules.'.md5($model);
+            $cacheKey = 'laravel-query-engine.rules.'.md5($model);
             Cache::forget($cacheKey);
             $this->info('Done!');
 
@@ -30,7 +30,7 @@ class ClearRulesCacheCommand extends Command
         $this->info('Clearing all query parameter rules cache...');
 
         if ($cache->supportsTags()) {
-            $cache->tags(['query-params'])->flush();
+            $cache->tags(['laravel-query-engine'])->flush();
             $this->info('Cache tags flushed successfully!');
         } else {
             $this->error('The current cache driver does not support tags.');

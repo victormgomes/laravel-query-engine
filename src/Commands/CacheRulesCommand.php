@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Commands;
+namespace Victormgomes\LaravelQueryEngine\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\Finder;
-use Victormgomes\QueryParams\Rules;
+use Victormgomes\LaravelQueryEngine\Rules;
 
 class CacheRulesCommand extends Command
 {
-    protected $signature = 'query-params:cache';
+    protected $signature = 'laravel-query-engine:cache';
 
     protected $description = 'Generate and cache all query parameter rules for your models';
 

@@ -1,0 +1,18 @@
+{
+    "source": {
+        "directories": [
+            "src"
+        ],
+        "excludes": [
+            "Commands",
+            "Facades",
+            "LaravelQueryEngineServiceProvider.php"
+        ]
+    },
+    "logs": {
+        "text": "build/infection.log"
+    },
+    "mutators": {
+        "@default": true
+    }
+}

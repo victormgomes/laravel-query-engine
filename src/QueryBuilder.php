@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams;
+namespace Victormgomes\LaravelQueryEngine;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,14 +17,14 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Validation\ValidationException;
-use Victormgomes\QueryParams\Contracts\FieldResolver;
-use Victormgomes\QueryParams\Enums\AbstractType;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Support\Builder\Operations\Filter;
-use Victormgomes\QueryParams\Support\ClassLoader;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Support\Resource;
+use Victormgomes\LaravelQueryEngine\Contracts\FieldResolver;
+use Victormgomes\LaravelQueryEngine\Enums\AbstractType;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Filter;
+use Victormgomes\LaravelQueryEngine\Support\ClassLoader;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Support\Resource;
 
 class QueryBuilder
 {
@@ -67,8 +67,26 @@ class QueryBuilder
                 unset($filters['with_deleted'], $filters['only_deleted']);
             }
 
-            if (! empty($filters)) {
-                self::applyFilters($query, $filters, $locale, $driver);
+            $resources = Resource::generate($modelFQCN);
+            $normalFilters = [];
+
+            foreach ($filters as $field => $ops) {
+                if (isset($resources['filters'][$field]['is_scope']) && $resources['filters'][$field]['is_scope']) {
+                    $scopeValue = $ops[Operators::EQ->value] ?? null;
+                    if ($scopeValue !== null && $scopeValue !== false && $scopeValue !== 'false' && $scopeValue !== '0') {
+                        if ($resources['filters'][$field]['type'] === 'boolean') {
+                            $query->{$field}();
+                        } else {
+                            $query->{$field}($scopeValue);
+                        }
+                    }
+                } else {
+                    $normalFilters[$field] = $ops;
+                }
+            }
+
+            if (! empty($normalFilters)) {
+                self::applyFilters($query, $normalFilters, $locale, $driver);
             }
         }
 
@@ -82,7 +100,38 @@ class QueryBuilder
         }
 
         if ($fields = $validated[AssociatedIndex::FIELDS->value] ?? null) {
-            $query->select((array) $fields);
+            $resources = Resource::generate($modelFQCN);
+            $realFields = [];
+            $aggregations = [];
+
+            foreach ((array) $fields as $field) {
+                if ($resources['fields'][$field]['is_accessor'] ?? false) {
+                    continue;
+                }
+
+                if ($resources['fields'][$field]['is_aggregation'] ?? false) {
+                    $aggregations[] = $resources['fields'][$field];
+
+                    continue;
+                }
+
+                $realFields[] = $field;
+            }
+
+            if (! empty($realFields)) {
+                $query->select($realFields);
+            }
+
+            foreach ($aggregations as $agg) {
+                if ($agg['agg_type'] === 'count') {
+                    $query->withCount($agg['relation']);
+                } elseif ($agg['agg_type'] === 'exists') {
+                    $query->withExists($agg['relation']);
+                } else {
+                    $method = 'with'.ucfirst($agg['agg_type']);
+                    $query->{$method}($agg['relation'], $agg['column']);
+                }
+            }
         }
 
         if ($includes = $validated[AssociatedIndex::INCLUDES->value] ?? null) {
@@ -125,6 +174,19 @@ class QueryBuilder
             (int) ($page[AssociatedIndex::NUMBER->value] ?? 1)
         );
 
+        if ($fields = $validated[AssociatedIndex::FIELDS->value] ?? null) {
+            $resources = Resource::generate(get_class($query->getModel()));
+            $accessorFields = [];
+            foreach ((array) $fields as $field) {
+                if ($resources['fields'][$field]['is_accessor'] ?? false) {
+                    $accessorFields[] = $field;
+                }
+            }
+            if (! empty($accessorFields)) {
+                $paginator->getCollection()->each->append($accessorFields);
+            }
+        }
+
         if ($driver) {
             $paginator->through(fn ($item) => $driver->translateItem($item, $locale));
         }
@@ -159,6 +221,19 @@ class QueryBuilder
             'page[cursor]',
             $cursor
         );
+
+        if ($fields = $validated[AssociatedIndex::FIELDS->value] ?? null) {
+            $resources = Resource::generate(get_class($query->getModel()));
+            $accessorFields = [];
+            foreach ((array) $fields as $field) {
+                if ($resources['fields'][$field]['is_accessor'] ?? false) {
+                    $accessorFields[] = $field;
+                }
+            }
+            if (! empty($accessorFields)) {
+                $cursorPaginator->getCollection()->each->append($accessorFields);
+            }
+        }
 
         if ($driver) {
             $cursorPaginator->through(fn ($item) => $driver->translateItem($item, $locale));

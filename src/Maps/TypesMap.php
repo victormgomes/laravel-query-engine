@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Maps;
+namespace Victormgomes\LaravelQueryEngine\Maps;
 
-use Victormgomes\QueryParams\Enums\AbstractType;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Enums\RuleType;
+use Victormgomes\LaravelQueryEngine\Enums\AbstractType;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Enums\RuleType;
 
 class TypesMap
 {
@@ -140,6 +140,26 @@ class TypesMap
             Operators::NOTEXISTS->value => [
                 AssociatedIndex::TYPES->value => $allTypes,
                 AssociatedIndex::RULES->value => RuleType::build(RuleType::BOOLEAN, RuleType::SOMETIMES),
+            ],
+            Operators::YEAR->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::DATE, AbstractType::DATETIME],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::INTEGER, RuleType::SOMETIMES),
+            ],
+            Operators::MONTH->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::DATE, AbstractType::DATETIME],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::INTEGER, RuleType::SOMETIMES, 'min:1', 'max:12'),
+            ],
+            Operators::DAY->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::DATE, AbstractType::DATETIME],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::INTEGER, RuleType::SOMETIMES, 'min:1', 'max:31'),
+            ],
+            Operators::DATE->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::DATE, AbstractType::DATETIME],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::DATE, RuleType::SOMETIMES),
+            ],
+            Operators::TIME->value => [
+                AssociatedIndex::TYPES->value => [AbstractType::DATETIME],
+                AssociatedIndex::RULES->value => RuleType::build(RuleType::STRING, RuleType::SOMETIMES),
             ],
         ];
     }

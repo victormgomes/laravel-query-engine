@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Victormgomes\QueryParams\Support\RuleGenerator;
+use Victormgomes\LaravelQueryEngine\Support\RuleGenerator;
 
 it('generates basic rules when resources are empty', function (): void {
     $resources = [

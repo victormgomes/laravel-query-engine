@@ -1,33 +1,72 @@
-# Query Params for Laravel
+# Laravel Query Engine
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/query-params/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/victormgomes/query-params/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/query-params/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/victormgomes/query-params/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
-[![License](https://img.shields.io/packagist/l/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
+Automatically generates dynamic API parameters, strict validation, and optimized
+queries based on Eloquent Models.
 
-A powerful, schema-aware API filtering engine for Laravel. It handles complex query parameters (filtering, sorting, field selection, relationship loading, and pagination) using native Laravel validation and highly optimized, database-agnostic Eloquent queries.
+## Package Status
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/victormgomes/laravel-query-engine.svg?style=flat-square)](https://packagist.org/packages/victormgomes/laravel-query-engine)
+[![Total Downloads](https://img.shields.io/packagist/dt/victormgomes/laravel-query-engine.svg?style=flat-square)](https://packagist.org/packages/victormgomes/laravel-query-engine)
+[![License](https://img.shields.io/packagist/l/victormgomes/laravel-query-engine.svg?style=flat-square)](https://packagist.org/packages/victormgomes/laravel-query-engine)
+
+[![PHP Versions](https://img.shields.io/badge/PHP-8.3_|_8.4_|_8.5-777BB4.svg?style=flat-square&logo=php)](https://php.net/)
+[![Laravel Versions](https://img.shields.io/badge/Laravel-12.x_|_13.x-22C55E.svg?style=flat-square&logo=laravel)](https://laravel.com/)
+
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/laravel-query-engine/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/victormgomes/laravel-query-engine/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/laravel-query-engine/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/victormgomes/laravel-query-engine/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Code Quality Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/laravel-query-engine/code-quality.yml?branch=main&label=PHPStan%20%26%20Insights&style=flat-square)](https://github.com/victormgomes/laravel-query-engine/actions?query=workflow%3A"Code+Quality+%26+Static+Analysis"+branch%3Amain)
 
 ## Why Use It?
 
-When building modern APIs, developers often face a difficult choice: write dozens of custom endpoints for every specific search context (manually validating and mapping queries for each one), or abandon REST entirely for heavy data-graph abstractions like GraphQL. 
+This package saves your time and tokens!
 
-This package gives you the power of dynamic querying while keeping your application native and RESTful. By empowering your standard Laravel `index` endpoints, you can:
-- **Avoid Endpoint Sprawl:** You no longer need to write custom search endpoints (e.g., `/users/active`, `/users/recent`). A single endpoint safely handles infinitely complex combinations of filters, sorts, and includes.
-- **Stay Strictly RESTful:** Keep your architecture native to Laravel without introducing the massive overhead, caching complexities, and learning curves associated with GraphQL.
-- **Zero-Boilerplate Security:** It acts as a **Schema-Aware Translation Layer**. It automatically inspects your Eloquent model schema to whitelist columns, generate strict validation rules, and securely cast URL values into native PHP types before they ever hit the database.
+Stop writing repetitive boilerplate for every index endpoint. `laravel-query-engine`
+acts as a seamless bridge between your HTTP requests and Eloquent.
+
+It empowers a single RESTful controller to handle dynamic, infinitely complex
+API queries. It automatically handles all the heavy lifting—validation, type
+casting, and query construction—while respecting your model's native
+configuration.
+
+You get the extreme flexibility of GraphQL, but with the simplicity and
+performance of standard Laravel REST APIs.
 
 ## Features
 
-- **Schema-Aware Validation:** Validation rules and type casting are automatically generated from your Eloquent model schema.
-- **High Performance Caching:** Automatically caches generated rules to prevent schema introspection overhead in production.
-- **Global Security Layer:** Granularly enable or disable specific URL features (like filtering, sorting, or includes) globally via the configuration file.
-- **AI Agent Ready:** Ships with a built-in Laravel Boost Skill to instantly teach AI coding assistants how to use the package in your project.
-- **API Documentation Ready:** Exposes methods to retrieve deduplicated filter schemas, making it incredibly easy to auto-generate OpenAPI/Swagger specs or dynamic frontend UIs.
-- **Database Agnostic:** Natively supports MySQL, PostgreSQL, SQLite, and SQL Server out of the box via standard Eloquent methods.
-- **Two Syntax Formats:** Support for both standard Laravel Arrays and raw JSON strings in the URL.
-- **Strict Visibility:** Fully respects `$visible` and `$hidden` arrays on your models to prevent data exposure.
-- **IDE Autocompletion:** Plug-and-play autocomplete for all macros out of the box.
+- **Automated Validation:** Generates strict validation rules directly from your
+  database schema.
+- **Dynamic Query Building:** Translates validated URL parameters directly into
+  native Eloquent builder actions.
+- **Strict Type Casting:** Inspects your schema to accurately cast URL strings
+  into their correct PHP types (integers, booleans, dates).
+- **Deep Security:** Natively respects your model's existing visibility
+  configurations to prevent unmapped column exposure.
+- **Advanced Querying:** Out-of-the-box support for full-text search, complex
+  date filters, and nested logical groupings.
+- **Model-Level Configuration:** Use native PHP attributes directly on your
+  models to securely expose Local Scopes and query aggregations.
+- **Exportable Schemas:** Easily export deduplicated filter schemas to generate
+  dynamic frontend UIs or OpenAPI documentation.
+
+## How It Works
+
+Pass dynamic query parameters via the URL using standard arrays or JSON.
+
+**The Request:**
+
+```text
+GET /api/users?filters={"name":{"like":"John"},"status":"active"}&sorts={"created_at":"desc"}&includes={"posts":{}}
+```
+
+**What the package executes under the hood:**
+
+```php
+User::where('name', 'LIKE', '%John%')
+    ->where('status', 'active')
+    ->orderBy('created_at', 'desc')
+    ->with('posts')
+    ->paginate();
+```
 
 ---
 
@@ -36,13 +75,13 @@ This package gives you the power of dynamic querying while keeping your applicat
 1. Install the package via Composer:
 
 ```bash
-composer require victormgomes/query-params
+composer require victormgomes/laravel-query-engine
 ```
 
-2. Publish the configuration file:
+1. Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --tag="query-params-config"
+php artisan vendor:publish --tag="laravel-query-engine-config"
 ```
 
 ---
@@ -51,15 +90,15 @@ php artisan vendor:publish --tag="query-params-config"
 
 ### Step 1: Auto-generate validation rules
 
-Annotate your FormRequest with `#[MapQueryParams(Model::class)]`.
+Annotate your FormRequest with `#[MapQueryEngine(Model::class)]`.
 
 ```php
 // app/Http/Requests/IndexUserRequest.php
 use Illuminate\Foundation\Http\FormRequest;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryEngine;
 use App\Models\User;
 
-#[MapQueryParams(User::class)]
+#[MapQueryEngine(User::class)]
 class IndexUserRequest extends FormRequest
 {
     public function authorize(): bool
@@ -73,7 +112,9 @@ It generates the validation rules based on the model schema.
 
 ### Step 2: Build the query
 
-The package automatically adds powerful new methods directly to all your Eloquent models. You can call these anywhere in your application (such as a Controller or a Service class) by simply passing the validated request:
+The package automatically adds powerful new methods directly to all your
+Eloquent models. You can call these anywhere in your application (such as a
+Controller or a Service class) by simply passing the validated request:
 
 ```php
 // app/Http/Controllers/UserController.php
@@ -88,48 +129,17 @@ public function index(IndexUserRequest $request): LengthAwarePaginator
 }
 ```
 
-This returns a `LengthAwarePaginator` with all valid filters, sorts, includes, and pagination automatically applied.
-
----
-
-## Available Model Methods
-
-All Eloquent models are automatically equipped with the following methods out of the box:
-
-```php
-// Full pipeline: returns a paginated result
-User::paginateQuery(?Request $request = null): LengthAwarePaginator
-
-// Full pipeline: returns a cursor-paginated result (for massive datasets)
-User::cursorPaginateQuery(?Request $request = null): CursorPaginator
-
-// Raw builder: chain additional constraints before pagination
-User::buildQuery(?Request $request = null): Eloquent\Builder
-
-// Retrieve the auto-generated validation rules
-User::getQueryRules(): array
-
-// Retrieve a deduplicated schema representing allowed filters and includes for frontends
-User::getFilterSchema(): array
-```
+This returns a `LengthAwarePaginator` with all valid filters, sorts, includes,
+and pagination automatically applied.
 
 ---
 
 ## Documentation
 
-For a deep dive into the features, please read the official documentation:
-
-- [URL Syntax & Supported Filters](docs/1-url-syntax-and-filters.md)
-- [Advanced Usage & Frontend Integration](docs/2-advanced-usage.md)
-- [Configuration, Caching & Security](docs/3-configuration-and-security.md)
+For a deep dive into the features, please read the
+[Official Documentation](docs/index.md).
 
 ---
-
-## Testing
-
-```bash
-composer run test
-```
 
 ## Credits
 
@@ -138,7 +148,10 @@ composer run test
 
 ## Support Us
 
-If you find this package useful in your day-to-day development, please consider [sponsoring my work](https://github.com/sponsors/VictorMGomes) or leaving a ⭐ on the repository. Your support directly helps keep this project actively maintained and free!
+If you find this package useful in your day-to-day development, please consider
+[sponsoring my work](https://github.com/sponsors/VictorMGomes) or leaving a ⭐
+on the repository. Your support directly helps keep this project actively
+maintained and free!
 
 ---
 
@@ -155,4 +168,5 @@ If you find this package useful in your day-to-day development, please consider 
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](LICENSE.md) for more
+information.

@@ -8,7 +8,8 @@ composer.lock
 # Logs
 npm-debug.log
 yarn-error.log
-logs
+logs/*
+!logs/.gitkeep
 
 # Caches
 .phpunit.cache

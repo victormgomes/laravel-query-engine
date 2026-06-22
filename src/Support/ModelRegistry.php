@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support;
+namespace Victormgomes\LaravelQueryEngine\Support;
 
 use ReflectionClass;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryEngine;
 
 class ModelRegistry
 {
@@ -31,10 +31,10 @@ class ModelRegistry
 
         $foundFqcn = null;
         $reflection = new ReflectionClass($request);
-        $attributes = $reflection->getAttributes(MapQueryParams::class);
+        $attributes = $reflection->getAttributes(MapQueryEngine::class);
 
         if (! empty($attributes)) {
-            /** @var MapQueryParams $attribute */
+            /** @var MapQueryEngine $attribute */
             $attribute = $attributes[0]->newInstance();
             if ($attribute->model !== null) {
                 $foundFqcn = $attribute->model;

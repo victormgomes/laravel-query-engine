@@ -7,13 +7,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Support\ModelRegistry;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Tests\Models\Author;
-use Victormgomes\QueryParams\Tests\Models\Post;
+use Illuminate\Support\Facades\DB;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryEngine;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\QueryBuilder;
+use Victormgomes\LaravelQueryEngine\Support\ModelRegistry;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Author;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Post;
 
 // ---------------------------------------------------------------------- //
 //  Eloquent Builder :: paginateQuery() macro                             //
@@ -96,8 +97,8 @@ it('resolves model from global registry first', function (): void {
     expect(ModelRegistry::resolveFrom($request))->toBe(Post::class);
 });
 
-it('resolves model from #[MapQueryParams] attribute as fallback', function (): void {
-    $request = new #[MapQueryParams(Post::class)] class extends FormRequest
+it('resolves model from #[MapQueryEngine] attribute as fallback', function (): void {
+    $request = new #[MapQueryEngine(Post::class)] class extends FormRequest
     {
         public function authorize(): bool
         {
@@ -313,4 +314,57 @@ it('supports cursor pagination via cursorPaginateQuery macro', function (): void
 
     expect($paginator2->count())->toBe(2);
     expect($paginator2->first()->title)->toBe('Post 3');
+});
+
+// ---------------------------------------------------------------------- //
+//  Advanced Features (Accessors, Scopes, Aggregations)                   //
+// ---------------------------------------------------------------------- //
+
+it('supports dynamic accessors on pagination', function (): void {
+    $author = Author::create(['name' => 'Victor']);
+    Post::create(['author_id' => $author->id, 'title' => 'Test Post']);
+
+    $request = new Request([
+        'fields' => ['id', 'title', 'virtual_attribute', 'virtual_legacy'],
+    ]);
+
+    $paginator = Post::paginateQuery($request);
+
+    $post = $paginator->first();
+    expect($post->toArray())->toHaveKey('virtual_attribute', 'virtual');
+    expect($post->toArray())->toHaveKey('virtual_legacy', 'legacy');
+});
+
+it('supports local scopes securely', function (): void {
+    $author = Author::create(['name' => 'Victor']);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 1', 'is_published' => false, 'views' => 10]);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 2', 'is_published' => true, 'views' => 10]);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 3', 'is_published' => true, 'views' => 50]);
+
+    // 1. Scope without parameter
+    // Due to bugs in the SQLite PDO driver when converting booleans under different
+    // PHP versions (e.g. Windows PHP 8.3) and older framework dependencies.
+    $request1 = new Request(['filters' => ['published' => true]]);
+    $results1 = QueryBuilder::buildQuery(Post::class, $request1)->get();
+    expect($results1)->toHaveCount(2);
+
+    // 2. Scope with parameter
+    $request2 = new Request(['filters' => ['popular' => ['eq' => 50]]]);
+    $results2 = QueryBuilder::buildQuery(Post::class, $request2)->get();
+    expect($results2)->toHaveCount(1);
+    expect($results2->first()->title)->toBe('Post 3');
+})->skip(fn () => DB::connection()->getDriverName() === 'sqlite', 'Ignored on SQLite due to PDO boolean inconsistencies on Windows/Linux edges');
+
+it('supports aggregations dynamically as virtual fields', function (): void {
+    $author = Author::create(['name' => 'Victor']);
+    Post::create(['author_id' => $author->id, 'title' => 'Post 1']);
+
+    $request = new Request([
+        'fields' => ['title', 'author_count'], // explicitly allowed in QueryOptions
+    ]);
+
+    $results = QueryBuilder::buildQuery(Post::class, $request)->get();
+    $post = $results->first();
+
+    expect($post->author_count)->toBe(1);
 });

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Enums;
+namespace Victormgomes\LaravelQueryEngine\Enums;
 
 enum Operators: string
 {
@@ -31,6 +31,11 @@ enum Operators: string
     case CONTAINEDBY = 'containedby';
     case OVERLAP = 'overlap';
     case FTS = 'fts';
+    case YEAR = 'year';
+    case MONTH = 'month';
+    case DAY = 'day';
+    case DATE = 'date';
+    case TIME = 'time';
 
     public static function values(): array
     {
