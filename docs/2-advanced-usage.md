@@ -131,7 +131,7 @@ must explicitly opt-in via `allowedAggregations`. The package supports `_count`,
 ### 4. Overriding Global Operators
 
 Sometimes you want to globally allow a certain operator in
-`config/laravel-query-engine.php` (like `like` or `fts`), but restrict it on a specific
+`config/query-engine.php` (like `like` or `fts`), but restrict it on a specific
 model for performance reasons. You can use `disableOperators` or
 `allowedOperators`.
 

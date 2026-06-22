@@ -13,7 +13,7 @@ php artisan laravel-query-engine:clear App\Models\User   # Clear rules for a spe
 
 ## Configuration Options
 
-After publishing the config file (`config/laravel-query-engine.php`), the following
+After publishing the config file (`config/query-engine.php`), the following
 options are available:
 
 | Key                    | Env Variable                       | Default       | Description                                      |
@@ -43,7 +43,7 @@ prevent data leaks.
 Extend the package to handle custom database behaviors by defining a Resolver.
 
 ```php
-// config/laravel-query-engine.php
+// config/query-engine.php
 'drivers' => [
     'default' => \App\Support\QueryDrivers\CustomDriver::class,
 ],

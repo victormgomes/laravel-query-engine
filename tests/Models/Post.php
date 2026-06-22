@@ -7,6 +7,7 @@ namespace Victormgomes\LaravelQueryEngine\Tests\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Victormgomes\LaravelQueryEngine\Attributes\QueryOptions;
 
 #[QueryOptions(
@@ -30,7 +31,7 @@ class Post extends Model
 
     public function scopePublished($query): void
     {
-        $query->whereIn('is_published', [true, 1]);
+        $query->where('is_published', DB::raw('1'));
     }
 
     public function scopePopular($query, int $minViews): void
