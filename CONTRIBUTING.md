@@ -45,5 +45,7 @@ composer run test
 
 - Provide a clear, descriptive title.
 - Explain _why_ you are making the change.
+- Follow **Conventional Commits** for your commit messages (e.g., `feat:`, `fix:`, `docs:`, `chore:`).
+- For **Breaking Changes**, use an exclamation mark `!` after the type/scope (e.g., `feat!: rewrite core logic` or `refactor!: rename attribute`). This triggers a major version release.
 - Ensure all tests and static analysis checks are passing.
 - Keep the PR focused on a single feature or bug fix.

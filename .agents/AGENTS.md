@@ -14,6 +14,8 @@ rules:
 All commit messages **must be in English** and follow the Conventional Commits
 specification. Use one of the following prefixes:
 
+- **Breaking Changes:** If a commit introduces a breaking change (requiring a major version bump), append an exclamation mark `!` to the prefix (e.g., `feat!:`, `refactor!:`).
+
 - `feat`: A new feature.
 - `fix`: A bug fix.
 - `docs`: Documentation only changes (e.g., changes to `README.md`, `SKILL.md`,
