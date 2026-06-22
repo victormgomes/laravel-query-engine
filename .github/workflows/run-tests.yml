@@ -73,3 +73,10 @@ jobs:
 
             - name: Execute tests
               run: vendor/bin/pest --ci
+
+    tests-passed:
+        name: All Tests Passed
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "All matrix tests have passed successfully."
