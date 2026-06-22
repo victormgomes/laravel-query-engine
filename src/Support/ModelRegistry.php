@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support;
+namespace Victormgomes\LaravelQueryEngine\Support;
 
 use ReflectionClass;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
 
 class ModelRegistry
 {

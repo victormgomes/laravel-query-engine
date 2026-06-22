@@ -6,20 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Rules;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Support\Resource;
-use Victormgomes\QueryParams\Tests\Models\Post;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\QueryBuilder;
+use Victormgomes\LaravelQueryEngine\Rules;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Support\Resource;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Post;
 
 beforeEach(function (): void {
     Resource::clearCache();
 });
 
 it('respects globally disabled features in resource generation', function (): void {
-    Config::set('query-params.features.includes', false);
-    Config::set('query-params.features.filters', false);
+    Config::set('laravel-query-engine.features.includes', false);
+    Config::set('laravel-query-engine.features.filters', false);
 
     $resource = Resource::generate(Post::class);
 
@@ -29,8 +29,8 @@ it('respects globally disabled features in resource generation', function (): vo
 });
 
 it('removes disabled features from the request during normalization', function (): void {
-    Config::set('query-params.features.includes', false);
-    Config::set('query-params.features.filters', false);
+    Config::set('laravel-query-engine.features.includes', false);
+    Config::set('laravel-query-engine.features.filters', false);
 
     $request = new Request([
         'includes' => ['author'],
@@ -46,7 +46,7 @@ it('removes disabled features from the request during normalization', function (
 });
 
 it('respects allowed operators whitelist in rule generation', function (): void {
-    Config::set('query-params.allowed_operators', ['eq', 'like']);
+    Config::set('laravel-query-engine.allowed_operators', ['eq', 'like']);
 
     $rules = Rules::generate(Post::class);
 
@@ -57,7 +57,7 @@ it('respects allowed operators whitelist in rule generation', function (): void 
 });
 
 it('strips non-whitelisted operators during normalization', function (): void {
-    Config::set('query-params.allowed_operators', ['eq', 'like']);
+    Config::set('laravel-query-engine.allowed_operators', ['eq', 'like']);
 
     $request = new Request([
         'filters' => [

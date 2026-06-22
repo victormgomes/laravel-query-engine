@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support;
+namespace Victormgomes\LaravelQueryEngine\Support;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use Victormgomes\QueryParams\Contracts\FieldResolver;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\Support\Normalizer\FeaturesNormalizer;
-use Victormgomes\QueryParams\Support\Normalizer\FiltersNormalizer;
-use Victormgomes\QueryParams\Support\Normalizer\IncludesNormalizer;
-use Victormgomes\QueryParams\Support\Normalizer\SortsNormalizer;
+use Victormgomes\LaravelQueryEngine\Contracts\FieldResolver;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Support\Normalizer\FeaturesNormalizer;
+use Victormgomes\LaravelQueryEngine\Support\Normalizer\FiltersNormalizer;
+use Victormgomes\LaravelQueryEngine\Support\Normalizer\IncludesNormalizer;
+use Victormgomes\LaravelQueryEngine\Support\Normalizer\SortsNormalizer;
 
 class QueryNormalizer
 {
@@ -45,7 +45,7 @@ class QueryNormalizer
     public static function resolveDriver(): ?FieldResolver
     {
         /** @var class-string<FieldResolver>|null $driverClass */
-        $driverClass = Config::get('query-params.drivers.default');
+        $driverClass = Config::get('laravel-query-engine.drivers.default');
 
         return $driverClass ? new $driverClass : null;
     }

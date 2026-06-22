@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Contracts;
+namespace Victormgomes\LaravelQueryEngine\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

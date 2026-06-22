@@ -6,14 +6,14 @@ To prevent database introspection overhead on every request in production, cache
 the generated rules.
 
 ```bash
-php artisan query-params:cache                   # Scan models and cache all rules
-php artisan query-params:clear                   # Clear all cached rules
-php artisan query-params:clear App\Models\User   # Clear rules for a specific model
+php artisan laravel-query-engine:cache                   # Scan models and cache all rules
+php artisan laravel-query-engine:clear                   # Clear all cached rules
+php artisan laravel-query-engine:clear App\Models\User   # Clear rules for a specific model
 ```
 
 ## Configuration Options
 
-After publishing the config file (`config/query-params.php`), the following
+After publishing the config file (`config/laravel-query-engine.php`), the following
 options are available:
 
 | Key                    | Env Variable                       | Default       | Description                                      |
@@ -43,11 +43,11 @@ prevent data leaks.
 Extend the package to handle custom database behaviors by defining a Resolver.
 
 ```php
-// config/query-params.php
+// config/laravel-query-engine.php
 'drivers' => [
     'default' => \App\Support\QueryDrivers\CustomDriver::class,
 ],
 ```
 
 Your driver must implement the
-`Victormgomes\QueryParams\Contracts\FieldResolver` interface.
+`Victormgomes\LaravelQueryEngine\Contracts\FieldResolver` interface.

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support;
+namespace Victormgomes\LaravelQueryEngine\Support;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
-use Victormgomes\QueryParams\Enums\AbstractType;
-use Victormgomes\QueryParams\Enums\RuleType;
+use Victormgomes\LaravelQueryEngine\Enums\AbstractType;
+use Victormgomes\LaravelQueryEngine\Enums\RuleType;
 
 final class RuleGenerator
 {
@@ -165,7 +165,7 @@ final class RuleGenerator
     private static function getPageRule(string $page): array
     {
         if ($page === 'limit') {
-            $maxLimit = Config::get('query-params.pagination.max_limit', 100);
+            $maxLimit = Config::get('laravel-query-engine.pagination.max_limit', 100);
 
             return ['sometimes', 'integer', 'min:1', "max:{$maxLimit}"];
         }

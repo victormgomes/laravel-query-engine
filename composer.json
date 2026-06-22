@@ -1,11 +1,11 @@
 {
-    "name": "victormgomes/query-params",
+    "name": "victormgomes/laravel-query-engine",
     "description": "Automatically generates dynamic API parameters, strict validation, and optimized queries based on Eloquent Models.",
     "keywords": [
         "Victor M. Gomes",
         "laravel",
         "eloquent",
-        "query-params",
+        "laravel-query-engine",
         "query-builder",
         "query",
         "api",
@@ -24,12 +24,12 @@
         "graphql",
         "relationships"
     ],
-    "homepage": "https://github.com/victormgomes/query-params",
+    "homepage": "https://github.com/victormgomes/laravel-query-engine",
     "license": "MIT",
     "support": {
-        "docs": "https://github.com/victormgomes/query-params/tree/main/docs",
-        "issues": "https://github.com/victormgomes/query-params/issues",
-        "source": "https://github.com/victormgomes/query-params"
+        "docs": "https://github.com/victormgomes/laravel-query-engine/tree/main/docs",
+        "issues": "https://github.com/victormgomes/laravel-query-engine/issues",
+        "source": "https://github.com/victormgomes/laravel-query-engine"
     },
     "funding": [
         {
@@ -79,13 +79,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Victormgomes\\QueryParams\\": "src/"
+            "Victormgomes\\LaravelQueryEngine\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Victormgomes\\QueryParams\\Tests\\": "tests/",
-            "Victormgomes\\QueryParams\\Database\\Factories\\": "database/factories/",
+            "Victormgomes\\LaravelQueryEngine\\Tests\\": "tests/",
+            "Victormgomes\\LaravelQueryEngine\\Database\\Factories\\": "database/factories/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -146,10 +146,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Victormgomes\\QueryParams\\QueryParamsServiceProvider"
+                "Victormgomes\\LaravelQueryEngine\\LaravelQueryEngineServiceProvider"
             ],
             "aliases": {
-                "QueryParams": "Victormgomes\\QueryParams\\Facades\\QueryBuilder"
+                "QueryEngine": "Victormgomes\\LaravelQueryEngine\\Facades\\QueryBuilder"
             }
         }
     },

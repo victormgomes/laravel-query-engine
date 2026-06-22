@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Normalizer;
+namespace Victormgomes\LaravelQueryEngine\Support\Normalizer;
 
 use Illuminate\Support\Facades\Config;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
 
 class FeaturesNormalizer
 {
     public static function filter(array $data): array
     {
-        $features = Config::get('query-params.features', [
+        $features = Config::get('laravel-query-engine.features', [
             'filters' => true,
             'sorts' => true,
             'includes' => true,

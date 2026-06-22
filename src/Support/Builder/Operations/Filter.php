@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Builder\Operations;
+namespace Victormgomes\LaravelQueryEngine\Support\Builder\Operations;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\ArrayHandler;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\ComparisonHandler;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\DateHandler;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\FilterOperation;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\LogicalHandler;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\NullHandler;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\PostgresHandler;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\RelationHandler;
-use Victormgomes\QueryParams\Support\Builder\Operations\Types\StringHandler;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\ArrayHandler;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\ComparisonHandler;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\DateHandler;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\FilterOperation;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\LogicalHandler;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\NullHandler;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\PostgresHandler;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\RelationHandler;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types\StringHandler;
 
 class Filter
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Builder\Operations\Types;
+namespace Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Types;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Victormgomes\QueryParams\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
 
 class ComparisonHandler implements FilterOperation
 {

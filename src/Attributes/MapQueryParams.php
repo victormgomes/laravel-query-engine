@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Attributes;
+namespace Victormgomes\LaravelQueryEngine\Attributes;
 
 use Attribute;
 

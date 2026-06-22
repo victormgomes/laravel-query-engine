@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Normalizer;
+namespace Victormgomes\LaravelQueryEngine\Support\Normalizer;
 
 use Illuminate\Support\Facades\Config;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Support\RelationMapper;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Support\RelationMapper;
 
 class FiltersNormalizer
 {
@@ -24,7 +24,7 @@ class FiltersNormalizer
             $filters = $mappedFilters;
         }
 
-        $allowedOperators = Config::get('query-params.allowed_operators', Operators::values());
+        $allowedOperators = Config::get('laravel-query-engine.allowed_operators', Operators::values());
 
         foreach ($filters as $field => $value) {
             if (! is_array($value)) {

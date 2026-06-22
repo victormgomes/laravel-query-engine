@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Resource;
+namespace Victormgomes\LaravelQueryEngine\Support\Resource;
 
 final class IncludeGenerator
 {

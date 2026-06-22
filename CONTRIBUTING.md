@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for considering contributing to `victormgomes/query-params`!
+Thank you for considering contributing to `victormgomes/laravel-query-engine`!
 
 ## Local Development
 

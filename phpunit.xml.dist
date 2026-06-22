@@ -30,7 +30,7 @@
         <exclude>
             <directory>./src/Commands</directory>
             <directory>./src/Facades</directory>
-            <file>./src/QueryParamsServiceProvider.php</file>
+            <file>./src/LaravelQueryEngineServiceProvider.php</file>
         </exclude>
     </source>
 </phpunit>

@@ -5,20 +5,20 @@ queries based on Eloquent Models.
 
 ## Package Status
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
-[![Total Downloads](https://img.shields.io/packagist/dt/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
-[![License](https://img.shields.io/packagist/l/victormgomes/query-params.svg?style=flat-square)](https://packagist.org/packages/victormgomes/query-params)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/victormgomes/laravel-query-engine.svg?style=flat-square)](https://packagist.org/packages/victormgomes/laravel-query-engine)
+[![Total Downloads](https://img.shields.io/packagist/dt/victormgomes/laravel-query-engine.svg?style=flat-square)](https://packagist.org/packages/victormgomes/laravel-query-engine)
+[![License](https://img.shields.io/packagist/l/victormgomes/laravel-query-engine.svg?style=flat-square)](https://packagist.org/packages/victormgomes/laravel-query-engine)
 
 [![PHP Versions](https://img.shields.io/badge/PHP-8.3_|_8.4_|_8.5-777BB4.svg?style=flat-square&logo=php)](https://php.net/)
 [![Laravel Versions](https://img.shields.io/badge/Laravel-12.x_|_13.x-22C55E.svg?style=flat-square&logo=laravel)](https://laravel.com/)
 
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/query-params/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/victormgomes/query-params/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/query-params/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/victormgomes/query-params/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![GitHub Code Quality Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/query-params/code-quality.yml?branch=main&label=PHPStan%20%26%20Insights&style=flat-square)](https://github.com/victormgomes/query-params/actions?query=workflow%3A"Code+Quality+%26+Static+Analysis"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/laravel-query-engine/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/victormgomes/laravel-query-engine/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/laravel-query-engine/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/victormgomes/laravel-query-engine/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Code Quality Action Status](https://img.shields.io/github/actions/workflow/status/victormgomes/laravel-query-engine/code-quality.yml?branch=main&label=PHPStan%20%26%20Insights&style=flat-square)](https://github.com/victormgomes/laravel-query-engine/actions?query=workflow%3A"Code+Quality+%26+Static+Analysis"+branch%3Amain)
 
 ## Why Use It?
 
-Stop writing repetitive boilerplate for every index endpoint. `query-params`
+Stop writing repetitive boilerplate for every index endpoint. `laravel-query-engine`
 acts as a seamless bridge between your HTTP requests and Eloquent.
 
 It empowers a single RESTful controller to handle dynamic, infinitely complex
@@ -73,13 +73,13 @@ User::where('name', 'LIKE', '%John%')
 1. Install the package via Composer:
 
 ```bash
-composer require victormgomes/query-params
+composer require victormgomes/laravel-query-engine
 ```
 
 1. Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --tag="query-params-config"
+php artisan vendor:publish --tag="laravel-query-engine-config"
 ```
 
 ---
@@ -93,7 +93,7 @@ Annotate your FormRequest with `#[MapQueryParams(Model::class)]`.
 ```php
 // app/Http/Requests/IndexUserRequest.php
 use Illuminate\Foundation\Http\FormRequest;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
 use App\Models\User;
 
 #[MapQueryParams(User::class)]

@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Tests\Models\Post;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Post;
 
 it('normalizes simple filters', function (): void {
     $request = new Request([

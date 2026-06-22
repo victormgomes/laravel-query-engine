@@ -28,7 +28,7 @@ If you cannot modify the FormRequest class directly (e.g., in a third-party
 package), register the request-model mapping globally:
 
 ```php
-use Victormgomes\QueryParams\Support\ModelRegistry;
+use Victormgomes\LaravelQueryEngine\Support\ModelRegistry;
 
 ModelRegistry::register(IndexUserRequest::class, User::class);
 ```
@@ -51,7 +51,7 @@ The package provides methods to export the schema for frontend applications
 building dynamic filter UIs.
 
 ```php
-use Victormgomes\QueryParams\Support\Resource;
+use Victormgomes\LaravelQueryEngine\Support\Resource;
 
 // Deduplicated schema (Recommended for Frontend integration)
 return Resource::getFilterSchema(User::class);
@@ -67,7 +67,7 @@ The core configuration for what is exposed over the API happens via the
 gatekeeper, leveraging a "Whitelist vs Blacklist" architecture.
 
 ```php
-use Victormgomes\QueryParams\Attributes\QueryOptions;
+use Victormgomes\LaravelQueryEngine\Attributes\QueryOptions;
 
 #[QueryOptions(
     // Features can be disabled entirely
@@ -131,7 +131,7 @@ must explicitly opt-in via `allowedAggregations`. The package supports `_count`,
 ### 4. Overriding Global Operators
 
 Sometimes you want to globally allow a certain operator in
-`config/query-params.php` (like `like` or `fts`), but restrict it on a specific
+`config/laravel-query-engine.php` (like `like` or `fts`), but restrict it on a specific
 model for performance reasons. You can use `disableOperators` or
 `allowedOperators`.
 

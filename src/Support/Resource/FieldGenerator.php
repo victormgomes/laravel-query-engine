@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Resource;
+namespace Victormgomes\LaravelQueryEngine\Support\Resource;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Collection;

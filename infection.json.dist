@@ -6,7 +6,7 @@
         "excludes": [
             "Commands",
             "Facades",
-            "QueryParamsServiceProvider.php"
+            "LaravelQueryEngineServiceProvider.php"
         ]
     },
     "logs": {

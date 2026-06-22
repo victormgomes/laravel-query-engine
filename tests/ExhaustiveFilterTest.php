@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Support\Builder\Operations\Filter;
-use Victormgomes\QueryParams\Tests\Models\Author;
-use Victormgomes\QueryParams\Tests\Models\Post;
-use Victormgomes\QueryParams\Tests\Models\SoftDeletablePost;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\QueryBuilder;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Filter;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Author;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Post;
+use Victormgomes\LaravelQueryEngine\Tests\Models\SoftDeletablePost;
 
 it('applies all basic comparison operators', function (string $operator, string $expectedSql): void {
     $query = Post::query();

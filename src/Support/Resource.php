@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support;
+namespace Victormgomes\LaravelQueryEngine\Support;
 
 use Illuminate\Database\Eloquent\ModelInfo;
 use Illuminate\Database\Eloquent\ModelInspector;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use ReflectionClass;
-use Victormgomes\QueryParams\Attributes\QueryOptions;
-use Victormgomes\QueryParams\Support\Resource\FieldGenerator;
-use Victormgomes\QueryParams\Support\Resource\FilterGenerator;
-use Victormgomes\QueryParams\Support\Resource\IncludeGenerator;
-use Victormgomes\QueryParams\Support\Resource\PaginationGenerator;
-use Victormgomes\QueryParams\Support\Resource\SortGenerator;
+use Victormgomes\LaravelQueryEngine\Attributes\QueryOptions;
+use Victormgomes\LaravelQueryEngine\Support\Resource\FieldGenerator;
+use Victormgomes\LaravelQueryEngine\Support\Resource\FilterGenerator;
+use Victormgomes\LaravelQueryEngine\Support\Resource\IncludeGenerator;
+use Victormgomes\LaravelQueryEngine\Support\Resource\PaginationGenerator;
+use Victormgomes\LaravelQueryEngine\Support\Resource\SortGenerator;
 
 class Resource
 {
@@ -37,7 +37,7 @@ class Resource
         $hidden = $modelInstance->getHidden();
 
         // Use configured metadata connection if none provided
-        $connection ??= Config::get('query-params.metadata_connection');
+        $connection ??= Config::get('laravel-query-engine.metadata_connection');
 
         /** @var ModelInfo|array $modelInfo */
         $modelInfo = $inspector->inspect($modelFQCN, $connection);
@@ -68,7 +68,7 @@ class Resource
         $attributesList = $reflection->getAttributes(QueryOptions::class);
         $modelConfig = ! empty($attributesList) ? $attributesList[0]->newInstance() : null;
 
-        $features = Config::get('query-params.features', [
+        $features = Config::get('laravel-query-engine.features', [
             'filters' => true,
             'sorts' => true,
             'includes' => true,

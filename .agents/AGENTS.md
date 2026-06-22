@@ -1,7 +1,7 @@
-# AI Developer Guidelines for `query-params`
+# AI Developer Guidelines for `laravel-query-engine`
 
 You are an AI coding assistant helping to develop and maintain the
-`victormgomes/query-params` package. This package is a schema-aware API
+`victormgomes/laravel-query-engine` package. This package is a schema-aware API
 filtering engine for Laravel that handles complex query parameters (filtering,
 sorting, field selection, relationship loading, and pagination) using native
 Laravel validation and highly optimized Eloquent queries.

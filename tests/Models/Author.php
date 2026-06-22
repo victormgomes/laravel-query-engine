@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Tests\Models;
+namespace Victormgomes\LaravelQueryEngine\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

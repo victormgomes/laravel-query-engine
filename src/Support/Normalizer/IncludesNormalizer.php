@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Normalizer;
+namespace Victormgomes\LaravelQueryEngine\Support\Normalizer;
 
-use Victormgomes\QueryParams\Support\RelationMapper;
+use Victormgomes\LaravelQueryEngine\Support\RelationMapper;
 
 class IncludesNormalizer
 {

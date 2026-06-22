@@ -1,6 +1,6 @@
 # Introduction
 
-Stop writing repetitive boilerplate for every index endpoint. `query-params` acts as a seamless bridge between your HTTP requests and Eloquent.
+Stop writing repetitive boilerplate for every index endpoint. `laravel-query-engine` acts as a seamless bridge between your HTTP requests and Eloquent.
 
 It empowers a single RESTful controller to handle dynamic, infinitely complex API queries. It automatically handles all the heavy lifting—validation, type casting, and query construction—while respecting your model's native configuration.
 

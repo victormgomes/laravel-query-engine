@@ -7,13 +7,13 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\QueryBuilder;
-use Victormgomes\QueryParams\Support\ModelRegistry;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Tests\Models\Author;
-use Victormgomes\QueryParams\Tests\Models\Post;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\QueryBuilder;
+use Victormgomes\LaravelQueryEngine\Support\ModelRegistry;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Author;
+use Victormgomes\LaravelQueryEngine\Tests\Models\Post;
 
 // ---------------------------------------------------------------------- //
 //  Eloquent Builder :: paginateQuery() macro                             //

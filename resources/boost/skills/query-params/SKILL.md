@@ -1,4 +1,4 @@
-# query-params Skill
+# laravel-query-engine Skill
 
 ## Overview
 
@@ -15,7 +15,7 @@ and SQL Server.
 ```php
 // app/Http/Requests/IndexUserRequest.php
 use Illuminate\Foundation\Http\FormRequest;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
 use App\Models\User;
 
 #[MapQueryParams(User::class)]
@@ -72,5 +72,5 @@ to ensure accurate implementation.
 
 You can view the full documentation and code in the vendor directory:
 
-- **Docs:** `vendor/victormgomes/query-params/docs/`
-- **Source code:** `vendor/victormgomes/query-params/src/`
+- **Docs:** `vendor/victormgomes/laravel-query-engine/docs/`
+- **Source code:** `vendor/victormgomes/laravel-query-engine/src/`

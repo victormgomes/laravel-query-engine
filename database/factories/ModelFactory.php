@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Database\Factories;
+namespace Victormgomes\LaravelQueryEngine\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Maps;
+namespace Victormgomes\LaravelQueryEngine\Maps;
 
-use Victormgomes\QueryParams\Enums\AbstractType;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Enums\RuleType;
+use Victormgomes\LaravelQueryEngine\Enums\AbstractType;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Enums\RuleType;
 
 class TypesMap
 {

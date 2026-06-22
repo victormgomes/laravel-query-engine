@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Support\Resource;
+namespace Victormgomes\LaravelQueryEngine\Support\Resource;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use ReflectionClass;
-use Victormgomes\QueryParams\Enums\AbstractType;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Support\Types;
+use Victormgomes\LaravelQueryEngine\Enums\AbstractType;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Support\Types;
 
 final class FilterGenerator
 {
@@ -40,7 +40,7 @@ final class FilterGenerator
         ?array $modelDisableOperators = null,
         array $allowedScopes = []
     ): array {
-        $allowedOperators = $modelAllowedOperators ?? Config::get('query-params.allowed_operators', Operators::values());
+        $allowedOperators = $modelAllowedOperators ?? Config::get('laravel-query-engine.allowed_operators', Operators::values());
         if (! empty($modelDisableOperators)) {
             $allowedOperators = array_values(array_diff($allowedOperators, $modelDisableOperators));
         }

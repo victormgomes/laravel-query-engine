@@ -1,6 +1,6 @@
 # Official Documentation: Query Params
 
-Welcome to the detailed documentation for `victormgomes/query-params`. This package is
+Welcome to the detailed documentation for `victormgomes/laravel-query-engine`. This package is
 an advanced API filtering and sorting engine for Laravel, fully secure
 and aware of your database schema.
 

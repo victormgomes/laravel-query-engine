@@ -1,6 +1,6 @@
 # Available Model Methods
 
-The `victormgomes/query-params` package automatically equips all Eloquent models with a set of powerful methods. These methods handle everything from query construction to pagination and schema exportation.
+The `victormgomes/laravel-query-engine` package automatically equips all Eloquent models with a set of powerful methods. These methods handle everything from query construction to pagination and schema exportation.
 
 ## Primary Query Methods
 

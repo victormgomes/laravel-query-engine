@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams\Enums;
+namespace Victormgomes\LaravelQueryEngine\Enums;
 
 enum Operators: string
 {

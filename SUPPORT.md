@@ -1,6 +1,6 @@
 # Support
 
-We are glad you are using **Query Params** (`victormgomes/query-params`)!
+We are glad you are using **Query Params** (`victormgomes/laravel-query-engine`)!
 
 If you need help or want to discuss a feature, please keep the following
 guidelines in mind to help us maintain the repository effectively.

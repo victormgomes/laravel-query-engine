@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Victormgomes\QueryParams;
+namespace Victormgomes\LaravelQueryEngine;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,14 +17,14 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Validation\ValidationException;
-use Victormgomes\QueryParams\Contracts\FieldResolver;
-use Victormgomes\QueryParams\Enums\AbstractType;
-use Victormgomes\QueryParams\Enums\AssociatedIndex;
-use Victormgomes\QueryParams\Enums\Operators;
-use Victormgomes\QueryParams\Support\Builder\Operations\Filter;
-use Victormgomes\QueryParams\Support\ClassLoader;
-use Victormgomes\QueryParams\Support\QueryNormalizer;
-use Victormgomes\QueryParams\Support\Resource;
+use Victormgomes\LaravelQueryEngine\Contracts\FieldResolver;
+use Victormgomes\LaravelQueryEngine\Enums\AbstractType;
+use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
+use Victormgomes\LaravelQueryEngine\Enums\Operators;
+use Victormgomes\LaravelQueryEngine\Support\Builder\Operations\Filter;
+use Victormgomes\LaravelQueryEngine\Support\ClassLoader;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
+use Victormgomes\LaravelQueryEngine\Support\Resource;
 
 class QueryBuilder
 {

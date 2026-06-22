@@ -5,13 +5,13 @@
 1. Install the package via Composer:
 
 ```bash
-composer require victormgomes/query-params
+composer require victormgomes/laravel-query-engine
 ```
 
 1. Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --tag="query-params-config"
+php artisan vendor:publish --tag="laravel-query-engine-config"
 ```
 
 ---
@@ -25,7 +25,7 @@ Annotate your FormRequest with `#[MapQueryParams(Model::class)]`.
 ```php
 // app/Http/Requests/IndexUserRequest.php
 use Illuminate\Foundation\Http\FormRequest;
-use Victormgomes\QueryParams\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
 use App\Models\User;
 
 #[MapQueryParams(User::class)]
