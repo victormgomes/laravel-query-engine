@@ -13,8 +13,8 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Victormgomes\LaravelQueryEngine\Commands\CacheRulesCommand;
 use Victormgomes\LaravelQueryEngine\Commands\ClearRulesCacheCommand;
 use Victormgomes\LaravelQueryEngine\Support\ModelRegistry;
-use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
 use Victormgomes\LaravelQueryEngine\Support\QueryEngineRequestMixin;
+use Victormgomes\LaravelQueryEngine\Support\QueryNormalizer;
 use Victormgomes\LaravelQueryEngine\Support\Resource;
 
 class LaravelQueryEngineServiceProvider extends PackageServiceProvider
