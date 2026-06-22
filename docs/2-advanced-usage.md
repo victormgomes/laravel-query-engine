@@ -7,7 +7,7 @@ generated rules, use the `$this->queryParamRules()` mixin method to merge them
 seamlessly.
 
 ```php
-#[MapQueryParams(User::class)]
+#[MapQueryEngine(User::class)]
 class IndexUserRequest extends FormRequest
 {
     public function rules(): array

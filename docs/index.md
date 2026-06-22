@@ -1,4 +1,4 @@
-# Official Documentation: Query Params
+# Official Documentation: Laravel Query Engine
 
 Welcome to the detailed documentation for `victormgomes/laravel-query-engine`. This package is
 an advanced API filtering and sorting engine for Laravel, fully secure

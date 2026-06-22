@@ -7,7 +7,7 @@ namespace Victormgomes\LaravelQueryEngine\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class MapQueryParams
+class MapQueryEngine
 {
     /**
      * @param  string|null  $model  The FQCN of the model to generate rules for.

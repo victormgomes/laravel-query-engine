@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryEngine;
 use Victormgomes\LaravelQueryEngine\Enums\AssociatedIndex;
 use Victormgomes\LaravelQueryEngine\QueryBuilder;
 use Victormgomes\LaravelQueryEngine\Support\ModelRegistry;
@@ -96,8 +96,8 @@ it('resolves model from global registry first', function (): void {
     expect(ModelRegistry::resolveFrom($request))->toBe(Post::class);
 });
 
-it('resolves model from #[MapQueryParams] attribute as fallback', function (): void {
-    $request = new #[MapQueryParams(Post::class)] class extends FormRequest
+it('resolves model from #[MapQueryEngine] attribute as fallback', function (): void {
+    $request = new #[MapQueryEngine(Post::class)] class extends FormRequest
     {
         public function authorize(): bool
         {

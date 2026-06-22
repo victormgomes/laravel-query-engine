@@ -15,10 +15,10 @@ and SQL Server.
 ```php
 // app/Http/Requests/IndexUserRequest.php
 use Illuminate\Foundation\Http\FormRequest;
-use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryEngine;
 use App\Models\User;
 
-#[MapQueryParams(User::class)]
+#[MapQueryEngine(User::class)]
 class IndexUserRequest extends FormRequest
 {
     public function authorize(): bool { return true; }

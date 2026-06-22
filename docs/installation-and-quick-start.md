@@ -20,15 +20,15 @@ php artisan vendor:publish --tag="laravel-query-engine-config"
 
 ### Step 1: Auto-generate validation rules
 
-Annotate your FormRequest with `#[MapQueryParams(Model::class)]`.
+Annotate your FormRequest with `#[MapQueryEngine(Model::class)]`.
 
 ```php
 // app/Http/Requests/IndexUserRequest.php
 use Illuminate\Foundation\Http\FormRequest;
-use Victormgomes\LaravelQueryEngine\Attributes\MapQueryParams;
+use Victormgomes\LaravelQueryEngine\Attributes\MapQueryEngine;
 use App\Models\User;
 
-#[MapQueryParams(User::class)]
+#[MapQueryEngine(User::class)]
 class IndexUserRequest extends FormRequest
 {
     public function authorize(): bool

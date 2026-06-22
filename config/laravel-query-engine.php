@@ -32,7 +32,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | When enabled, the package will log the generated rules for each
-    | form request that uses MapQueryParams.
+    | form request that uses MapQueryEngine.
     |
     */
     'debug' => env('QUERY_PARAMS_DEBUG', false),
