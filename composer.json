@@ -55,12 +55,12 @@
         "illuminate/validation": "^12.0 || ^13.0",
         "illuminate/console": "^12.0 || ^13.0",
         "nesbot/carbon": "^3.0",
-        "symfony/finder": "^7.0",
+        "symfony/finder": "^7.0 || ^8.0",
         "ext-filter": "*"
     },
     "require-dev": {
-        "captainhook/captainhook": "*",
-        "captainhook/plugin-composer": "*",
+        "captainhook/captainhook": "^5.0",
+        "captainhook/plugin-composer": "^5.0",
         "infection/infection": "^0.33",
         "larastan/larastan": "^3.0",
         "laravel/pao": "^1.1",
@@ -129,6 +129,7 @@
         "act:all": "sudo act 2>&1 | tee logs/act-all.txt ; composer run act:clean",
         "act:lint": "sudo act -W .github/workflows/lint-infra.yml 2>&1 | tee logs/act-lint.txt ; composer run act:clean",
         "act:tests": "sudo act -W .github/workflows/run-tests.yml 2>&1 | tee logs/act-tests.txt ; composer run act:clean",
+        "act:tests:single": "sudo act -W .github/workflows/run-tests.yml --matrix os:ubuntu-latest --matrix php:8.5 --matrix laravel:13.* --matrix stability:prefer-stable 2>&1 | tee logs/act-tests-single.txt ; composer run act:clean",
         "act:quality": "sudo act -W .github/workflows/code-quality.yml 2>&1 | tee logs/act-quality.txt ; composer run act:clean",
         "act:style": "sudo act -W .github/workflows/fix-php-code-style-issues.yml 2>&1 | tee logs/act-style.txt ; composer run act:clean"
     },

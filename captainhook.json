@@ -1,4 +1,8 @@
 {
+    "config": {
+        "run-mode": "docker",
+        "run-exec": "docker compose run --rm dev"
+    },
     "commit-msg": {
         "enabled": true,
         "actions": [
@@ -41,11 +45,29 @@
                 ]
             },
             {
-                "action": "composer run act:lint",
+                "action": "composer run check:json",
                 "conditions": [
                     {
                         "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
-                        "args": [["yml", "yaml", "md", "json"]]
+                        "args": ["json"]
+                    }
+                ]
+            },
+            {
+                "action": "composer run check:yaml",
+                "conditions": [
+                    {
+                        "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
+                        "args": [["yml", "yaml"]]
+                    }
+                ]
+            },
+            {
+                "action": "composer run check:markdown",
+                "conditions": [
+                    {
+                        "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileStaged\\OfType",
+                        "args": ["md"]
                     }
                 ]
             }
@@ -55,7 +77,7 @@
         "enabled": true,
         "actions": [
             {
-                "action": "composer run act:quality",
+                "action": "composer run check:types",
                 "options": [],
                 "conditions": [
                     {
@@ -65,7 +87,17 @@
                 ]
             },
             {
-                "action": "composer run act:tests",
+                "action": "composer run check:insights",
+                "options": [],
+                "conditions": [
+                    {
+                        "exec": "\\CaptainHook\\App\\Hook\\Condition\\FileChanged\\OfType",
+                        "args": [["php", "json", "lock"]]
+                    }
+                ]
+            },
+            {
+                "action": "composer run test",
                 "options": [],
                 "conditions": [
                     {
