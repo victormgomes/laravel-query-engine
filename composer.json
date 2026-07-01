@@ -61,7 +61,7 @@
     "require-dev": {
         "captainhook/captainhook": "^5.0",
         "captainhook/plugin-composer": "^5.0",
-        "infection/infection": "^0.33",
+        "infection/infection": "^0.34",
         "larastan/larastan": "^3.0",
         "laravel/pao": "^1.1",
         "laravel/pint": "^1.14",
